@@ -1,20 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import Menu from "../../menu/Menu";
 import Navi from "../../navi/Navi";
 import {
   changeCategoryCheckbox,
+  changeInsertModal,
+  clearInsertModal,
   crudCategoryData,
+  fetchAsyncGetCategory,
   setAllChecked,
   setAllUnchecked,
 } from "../crudCategorySlice";
 import MaintResult from "../maintResult/MaintResult";
 import { messageClear } from "../messageSlice";
+import { insertAsyncCategory } from "../messageSlice";
+import insertJson from "../crudLegalCategory/insertCategory.json";
 
 const CrudLegalCategory: React.FC = () => {
   const data = useAppSelector(crudCategoryData);
   const dispatch = useAppDispatch();
   const [allCheckCheckbox, setAllCheckCheckbox] = useState(false);
+  const [deleteIds, setDeleteIds] = useState();
   const onClickAllCheckbox = () => {
     dispatch(messageClear);
     if (allCheckCheckbox) {
@@ -29,6 +35,29 @@ const CrudLegalCategory: React.FC = () => {
     dispatch(messageClear);
     dispatch(changeCategoryCheckbox(e.target.dataset.id));
     setAllCheckCheckbox(false);
+  };
+  const insertClose: React.RefObject<HTMLButtonElement> = useRef(null);
+  const initialAddModal = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    dispatch(messageClear);
+    dispatch(clearInsertModal());
+  };
+  const handleInsertSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const thisInsertData: typeof insertJson = {
+      id: data.columnTitles[0].value,
+      categoryname: data.columnTitles[1].value,
+      sortorder: data.columnTitles[2].value,
+      color: data.columnTitles[3].value,
+      currentPage: data.specifiedPage,
+    };
+    (insertClose.current as HTMLButtonElement).click();
+    async function execInsert() {
+      await dispatch(insertAsyncCategory(thisInsertData));
+      await dispatch(fetchAsyncGetCategory(data.specifiedPage));
+    }
+    execInsert();
   };
 
   return (
@@ -51,7 +80,7 @@ const CrudLegalCategory: React.FC = () => {
                     href="#addRecordModal"
                     className="btn btn-success"
                     data-toggle="modal"
-                    //onClick={/* ② */}
+                    onClick={initialAddModal}
                   >
                     <i className="material-icons">&#xE147;</i>{" "}
                     <span>Add New Record</span>
@@ -247,41 +276,50 @@ const CrudLegalCategory: React.FC = () => {
         <div id="addRecordModal" className="modal fade">
           <div className="modal-dialog">
             <div className="modal-content">
-              <form
-                //onSubmit={/* ⑫ */}
-                id="addForm"
-              >
+              <form onSubmit={(e) => handleInsertSubmit(e)} id="addForm">
                 <div className="modal-header">
-                  <h4 className="modal-title">
-                    レコード追加 {/*stateのpageTitle*/}
-                  </h4>
+                  <h4 className="modal-title">レコード追加 {data.pageTitle}</h4>
                   <button
                     type="button"
                     className="close"
                     data-dismiss="modal"
                     aria-hidden="true"
-                    //ref={/* ⑬ */}
+                    ref={insertClose}
                   >
                     &times;
                   </button>
                 </div>
                 <div className="modal-body">
                   {/* stateのcolumnTitlesをmapし 各要素をcolumnTitleとして、以下の内容をreturn()する */}
-                  <div className="form-group">
-                    <label>{/*columnTitle.Field*/}</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      //id={/*columnTitle.Field*/} name={/*columnTitle.Field*/} value={/*columnTitle.value*/} onChange={/* ⑭ */}
-                      required
-                    />
-                  </div>
+                  {data.columnTitles.map((columnTitle, i) => {
+                    return (
+                      <div className="form-group">
+                        <label>{columnTitle.Field}</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id={columnTitle.Field}
+                          name={columnTitle.Field}
+                          value={columnTitle.value}
+                          onChange={(e) =>
+                            dispatch(
+                              changeInsertModal({
+                                value: e.target.value,
+                                field: columnTitle.Field,
+                              })
+                            )
+                          }
+                          required
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
                 <div className="modal-footer">
                   <input
                     type="hidden"
                     name="currentPage"
-                    //value={/*stateのspecifiedPage*/}
+                    value={data.specifiedPage}
                   />
                   <input
                     type="button"

@@ -95,14 +95,17 @@ const crudCategorySlice = createSlice({
       });
       state.data.columnTitles = newModals;
     },
-    changeInsertModal: (state, action) => {
+    changeInsertModal: (
+      state,
+      action: { payload: { value: string; field: string } }
+    ) => {
       const newModals: typeof state.data.columnTitles = [];
       state.data.columnTitles.map((columnTitle) => {
         const newModal = {
           Field: columnTitle.Field,
           value: columnTitle.value,
         };
-        if (action.payload.name === columnTitle.Field) {
+        if (action.payload.field === columnTitle.Field) {
           newModal.value = action.payload.value;
         }
         return newModals.push(newModal);
