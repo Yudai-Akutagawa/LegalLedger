@@ -12,15 +12,20 @@ import {
   setAllUnchecked,
 } from "../crudCategorySlice";
 import MaintResult from "../maintResult/MaintResult";
-import { messageClear } from "../messageSlice";
+import { deleteAsyncCategory, messageClear } from "../messageSlice";
 import { insertAsyncCategory } from "../messageSlice";
 import insertJson from "../crudLegalCategory/insertCategory.json";
+import deleteJson from "../crudLegalCategory/deleteCategory.json";
+import editJson from "../crudLegalCategory/editCategory.json";
 
 const CrudLegalCategory: React.FC = () => {
   const data = useAppSelector(crudCategoryData);
   const dispatch = useAppDispatch();
   const [allCheckCheckbox, setAllCheckCheckbox] = useState(false);
-  const [deleteIds, setDeleteIds] = useState();
+  const [deleteIds, setDeleteIds] = useState("なし");
+  const [multiple, setMultiple] = useState("single");
+
+  //チェックボックス処理用関数
   const onClickAllCheckbox = () => {
     dispatch(messageClear);
     if (allCheckCheckbox) {
@@ -36,6 +41,7 @@ const CrudLegalCategory: React.FC = () => {
     dispatch(changeCategoryCheckbox(e.target.dataset.id));
     setAllCheckCheckbox(false);
   };
+  //データ追加処理用関数
   const insertClose: React.RefObject<HTMLButtonElement> = useRef(null);
   const initialAddModal = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -58,6 +64,52 @@ const CrudLegalCategory: React.FC = () => {
       await dispatch(fetchAsyncGetCategory(data.specifiedPage));
     }
     execInsert();
+  };
+  //データ削除処理用関数
+  const deleteClose: React.RefObject<HTMLButtonElement> = useRef(null);
+  const setDeleteModal = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    dispatch(messageClear);
+    const id = e.currentTarget.dataset.id as string;
+    setDeleteIds(id);
+    setMultiple("single");
+  };
+  const setDeleteModalSelected = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    dispatch(messageClear);
+    const ids: number[] = [];
+    data.details.map((detail) => {
+      if (detail.checkbox === true) {
+        ids.push(detail.id);
+      }
+      return ids;
+    });
+    let strIds = "";
+    if (ids.length) {
+      strIds = ids.join();
+    } else {
+      strIds = "なし";
+    }
+    setDeleteIds(strIds);
+    setMultiple("multiple");
+  };
+  const handleDeleteSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const thisDeleteData: typeof deleteJson = {
+      id: deleteIds,
+      multiple: multiple,
+      currentPage: data.specifiedPage,
+    };
+    (deleteClose.current as HTMLButtonElement).click();
+    async function execDelete() {
+      await dispatch(deleteAsyncCategory(thisDeleteData));
+      await dispatch(fetchAsyncGetCategory(data.specifiedPage));
+    }
+    execDelete();
   };
 
   return (
@@ -90,7 +142,7 @@ const CrudLegalCategory: React.FC = () => {
                     id="selectDelete"
                     className="btn btn-warning"
                     data-toggle="modal"
-                    // onClick={/* ③ */}
+                    onClick={setDeleteModalSelected}
                   >
                     <i className="material-icons">&#xE15C;</i>{" "}
                     <span>Delete</span>
@@ -172,7 +224,7 @@ const CrudLegalCategory: React.FC = () => {
                           className="delete"
                           data-toggle="modal"
                           data-id={`${detail.id}`}
-                          // onClick={/* ㉑ */}
+                          onClick={setDeleteModal}
                         >
                           <i
                             className="material-icons"
@@ -343,20 +395,15 @@ const CrudLegalCategory: React.FC = () => {
           <div className="modal-dialog">
             <div className="modal-content">
               {/* <form action="/deleteLegalCategory" method="post"> */}
-              <form
-                //onSubmit={/* ⑮ */}
-                id="deleteForm"
-              >
+              <form onSubmit={(e) => handleDeleteSubmit(e)} id="deleteForm">
                 <div className="modal-header">
-                  <h4 className="modal-title">
-                    レコード削除{/*stateのpageTitle*/}
-                  </h4>
+                  <h4 className="modal-title">レコード削除{data.pageTitle}</h4>
                   <button
                     type="button"
                     className="close"
                     data-dismiss="modal"
                     aria-hidden="true"
-                    //ref={/*deleteClose*/}
+                    ref={deleteClose}
                   >
                     &times;
                   </button>
@@ -365,7 +412,7 @@ const CrudLegalCategory: React.FC = () => {
                   <p>以下のレコードを削除してよろしいですか?</p>
                   <p className="text-warning">
                     <small>
-                      id:<span id="deletingTarget">{/* ⑯ */}</span>
+                      id:<span id="deletingTarget">{deleteIds}</span>
                     </small>
                   </p>
                   <input type="hidden" name="id" id="ids" />
@@ -373,13 +420,14 @@ const CrudLegalCategory: React.FC = () => {
                     type="hidden"
                     name="multipl"
                     id="multiple"
-                    //  value={/* ⑰ */}
+                    value={multiple}
                   />
                 </div>
                 <div className="modal-footer">
                   <input
                     type="hidden"
-                    name="currentPage" //value={/*stateのspecifiedPage*/}
+                    name="currentPage"
+                    value={data.specifiedPage}
                   />
                   <input
                     type="button"
