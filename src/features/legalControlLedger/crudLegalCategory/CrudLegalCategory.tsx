@@ -4,6 +4,8 @@ import Menu from "../../menu/Menu";
 import Navi from "../../navi/Navi";
 import {
   changeCategoryCheckbox,
+  changeEditModal,
+  setEditModal,
   changeInsertModal,
   clearInsertModal,
   crudCategoryData,
@@ -12,7 +14,11 @@ import {
   setAllUnchecked,
 } from "../crudCategorySlice";
 import MaintResult from "../maintResult/MaintResult";
-import { deleteAsyncCategory, messageClear } from "../messageSlice";
+import {
+  deleteAsyncCategory,
+  editAsyncCategory,
+  messageClear,
+} from "../messageSlice";
 import { insertAsyncCategory } from "../messageSlice";
 import insertJson from "../crudLegalCategory/insertCategory.json";
 import deleteJson from "../crudLegalCategory/deleteCategory.json";
@@ -110,6 +116,24 @@ const CrudLegalCategory: React.FC = () => {
       await dispatch(fetchAsyncGetCategory(data.specifiedPage));
     }
     execDelete();
+  };
+  //データ更新処理用関数
+  const editClose: React.RefObject<HTMLButtonElement> = useRef(null);
+  const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const thisEditData: typeof editJson = {
+      id: data.columnTitleId.value,
+      categoryname: data.columnTitlesModal[0].value,
+      sortorder: data.columnTitlesModal[1].value,
+      color: data.columnTitlesModal[2].value,
+      currentPage: data.specifiedPage,
+    };
+    (editClose.current as HTMLButtonElement).click();
+    async function execEdit() {
+      await dispatch(editAsyncCategory(thisEditData));
+      await dispatch(fetchAsyncGetCategory(data.specifiedPage));
+    }
+    execEdit();
   };
 
   return (
@@ -209,7 +233,10 @@ const CrudLegalCategory: React.FC = () => {
                           data-toggle="modal"
                           id={`${detail.id}Edit`}
                           data-id={`${detail.id}`}
-                          //onClick={/* ⑦ */}
+                          onClick={(e) => {
+                            dispatch(messageClear());
+                            dispatch(setEditModal(e));
+                          }}
                         >
                           <i
                             className="material-icons"
@@ -251,7 +278,7 @@ const CrudLegalCategory: React.FC = () => {
                     return (
                       <li
                         className="page-item"
-                        //onClick={/* ⑧ */}
+                        //onClick={() => {dispatch(fetchAsyncGetCategory(prev.page));initCheckboxes();dispatch(messageClear())}}
                       >
                         <a>Previous</a>
                       </li>
@@ -272,7 +299,7 @@ const CrudLegalCategory: React.FC = () => {
                       <li
                         className="page-item active"
                         key={index}
-                        // onClick={/* ⑨ */}
+                        // onClick=() => {dispatch(fetchAsyncGetCategory(nation.page));initCheckboxes();dispatch(messageClear())}}
                       >
                         <a className="page-link">{nation.page}</a>
                       </li>
@@ -283,7 +310,7 @@ const CrudLegalCategory: React.FC = () => {
                       <li
                         className="page-item"
                         key={index}
-                        // onClick={/* ⑩ */}
+                        // onClick={() => {dispatch(fetchAsyncGetCategory(nation.page));initCheckboxes();dispatch(messageClear())}}
                       >
                         <a className="page-link">{nation.page}</a>
                       </li>
@@ -296,7 +323,7 @@ const CrudLegalCategory: React.FC = () => {
                     return (
                       <li
                         className="page-item"
-                        // onClick={/* ⑪ */}
+                        // onClick={() => {dispatch(fetchAsyncGetCategory(next.page));initCheckboxes();dispatch(messageClear())}}
                       >
                         <a className="page-link">Next</a>
                       </li>
@@ -449,47 +476,63 @@ const CrudLegalCategory: React.FC = () => {
         <div id="editRecordModal" className="modal fade">
           <div className="modal-dialog">
             <div className="modal-content">
-              <form // onSubmit={/* ⑱ */}
-                id="editForm"
-              >
+              <form onSubmit={(e) => handleEditSubmit(e)} id="editForm">
                 <div className="modal-header">
-                  <h4 className="modal-title">
-                    レコード更新 {/*stateのpageTitle*/}
-                  </h4>
+                  <h4 className="modal-title">レコード更新 {data.pageTitle}</h4>
                   <button
                     type="button"
                     className="close"
                     data-dismiss="modal"
-                    aria-hidden="true" //ref={/* ⑲ */}
+                    aria-hidden="true"
+                    ref={editClose}
                   >
                     &times;
                   </button>
                 </div>
                 <div className="modal-body">
                   <div className="form-group">
-                    <label>{/*stateのcolumnTitleId.Field*/}</label>
+                    <label>{data.columnTitleId.Field}</label>
                     <input
                       type="text"
                       className="form-control"
                       name="id"
-                      //id={/*`${stateのcolumnTitleId.Field}Edit`*/} value={/*stateのcolumnTitleId.value*/}
+                      id={`${data.columnTitleId.Field}Edit`}
+                      value={data.columnTitleId.value}
                       readOnly
                     />
                   </div>
                   {/* stateのcolumnTitlesをmapし 各要素をcolmunTitlesModalとして、以下の内容をreturn()する*/}
-                  <div className="form-group">
-                    <label>{/*stateのcolmunTitlesModal.Field*/}</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      //id={/*`${stateのcolmunTitlesModal.Field}Edit`*/} name={/*stateのcolmunTitlesModal.Field*/} value={/*stateのcolmunTitlesModal.value*/} onChange={/* ⑳ */}
-                      required
-                    />
-                  </div>
+                  {data.columnTitles.map((colmunTitlesModal, index) => {
+                    if (index) {
+                      const editDom = (
+                        <div className="form-group">
+                          <label>{colmunTitlesModal.Field}</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            id={`${colmunTitlesModal.Field}Edit`}
+                            name={colmunTitlesModal.Field}
+                            value={colmunTitlesModal.value}
+                            onChange={(e) =>
+                              dispatch(
+                                changeEditModal({
+                                  value: e.target.value,
+                                  field: colmunTitlesModal.Field,
+                                })
+                              )
+                            }
+                            required
+                          />
+                        </div>
+                      );
+                    }
+                    return editDom;
+                  })}
                   <div className="modal-footer">
                     <input
                       type="hidden"
-                      name="currentPage" // value={/*stateのspecifiedPage*/}
+                      name="currentPage"
+                      value={data.specifiedPage}
                     />
                     <input
                       type="button"

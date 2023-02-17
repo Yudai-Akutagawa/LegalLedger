@@ -112,14 +112,17 @@ const crudCategorySlice = createSlice({
       });
       state.data.columnTitles = newModals;
     },
-    changeEditModal: (state, action) => {
+    changeEditModal: (
+      state,
+      action: { payload: { value: string; field: string } }
+    ) => {
       const newModals: typeof state.data.columnTitlesModal = [];
       state.data.columnTitlesModal.map((columnTitleModal) => {
         const newModal = {
           Field: columnTitleModal.Field,
           value: columnTitleModal.value,
         };
-        if (action.payload.name === columnTitleModal.Field) {
+        if (action.payload.field === columnTitleModal.Field) {
           newModal.value = action.payload.value;
         }
         return newModals.push(newModal);
@@ -136,8 +139,9 @@ const crudCategorySlice = createSlice({
             { Field: "color", value: detail.color },
           ];
         }
+        return newModals;
       });
-      state.data.columnTitles = newModals;
+      state.data.columnTitlesModal = newModals;
     },
   },
   extraReducers: (builder) => {
