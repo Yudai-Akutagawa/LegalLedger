@@ -1,0 +1,77 @@
+{
+  "pageTitle": "legalcategory",
+  "columnTitles": [
+    {
+      "Field": "id",
+      "value": ""
+    },
+    {
+      "Field": "categoryname",
+      "value": ""
+    },
+    {
+      "Field": "sortorder",
+      "value": ""
+    },
+    {
+      "Field": "color",
+      "value": ""
+    }
+  ],
+  "columnTitlesModal": [
+    {
+      "Field": "categoryname",
+      "value": ""
+    },
+    {
+      "Field": "sortorder",
+      "value": ""
+    },
+    {
+      "Field": "color",
+      "value": ""
+    }
+  ],
+  "columnTitleId": {
+    "Field": "id",
+    "value": ""
+  },
+  "details": [
+    {
+      "id": 1,
+      "categoryname": "法律・条例等",
+      "sortorder": 1,
+      "color": "#e83e8c",
+      "checkbox": false
+    },
+    {
+      "id": 1,
+      "categoryname": "",
+      "sortorder": null,
+      "color": "",
+      "checkbox": false
+    }
+  ],
+  "specifiedPage": 1,
+  "allPages": 1,
+  "allCount": 3,
+  "displayCount": 3,
+  "pageNation": [
+    {
+      "active": true,
+      "page": 1
+    }
+  ],
+  "pagePrev": [
+    {
+      "prev": false,
+      "page": 1
+    }
+  ],
+  "pageNext": [
+    {
+      "next": false,
+      "page": 1
+    }
+  ]
+}

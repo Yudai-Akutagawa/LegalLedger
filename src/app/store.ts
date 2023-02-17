@@ -1,9 +1,15 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import crudCategoryReducer from "../features/legalControlLedger/crudCategorySlice";
+import legalControlLedgerReducer from "../features/legalControlLedger/legalControlLedgerSlice";
+import messageReducer from "../features/legalControlLedger/messageSlice";
+import menuReducer from "../features/menu/menuSelectSlice";
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    legalControlLedger: legalControlLedgerReducer,
+    menu: menuReducer,
+    crudCategory: crudCategoryReducer,
+    message: messageReducer,
   },
 });
 

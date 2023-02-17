@@ -1,58 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React, { Component, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "./app/hooks";
+import { fetchAsyncGet } from "./features/legalControlLedger/legalControlLedgerSlice";
+import "./App.css";
+import LegalControlLedger from "./features/legalControlLedger/legalControlLedger/LegalControlLedger";
+import Navi from "./features/navi/Navi";
+import Menu from "./features/menu/Menu";
+import { menuSelect } from "./features/menu/menuSelectSlice";
+import CrudLegalCategory from "./features/legalControlLedger/crudLegalCategory/CrudLegalCategory";
+import CrudControlLedger from "./features/legalControlLedger/crudControlLedger/CrudControlLedger";
+import { fetchAsyncGetCategory } from "./features/legalControlLedger/crudCategorySlice";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
-  );
+  const dispatch = useAppDispatch();
+  const menu = useAppSelector(menuSelect);
+  let displayComponent = <LegalControlLedger />;
+
+  useEffect(() => {
+    dispatch(fetchAsyncGet());
+    dispatch(fetchAsyncGetCategory(0));
+  }, [dispatch]);
+
+  switch (menu) {
+    case "list":
+      displayComponent = <LegalControlLedger />;
+      break;
+    case "crud-category":
+      displayComponent = <CrudLegalCategory />;
+      break;
+    case "crud-detail":
+      displayComponent = <CrudControlLedger />;
+      break;
+    default:
+      break;
+  }
+
+  return <div className="App">{displayComponent}</div>;
 }
 
 export default App;
