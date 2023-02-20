@@ -1,0 +1,148 @@
+{
+    "pageTitle": "legalcontrolledger",
+    "columnTitles": [
+    {
+    "date": false,
+    "category": false,
+    "valid": false,
+    "Field": "id",
+    "value":""
+    },
+    {
+    "date": false,
+    "category": false,
+    "valid": false,
+    "Field": "title",
+    "value":""
+    },
+    {
+    "date": false,
+    "category": false,
+    "valid": false,
+    "Field": "url",
+    "value":""
+    },
+    {
+    "date": true,
+    "category": false,
+    "valid": false,
+    "Field": "effectivedate",
+    "value":""
+    },
+    {
+    "date": false,
+    "category": true,
+    "valid": false,
+    "Field": "category",
+    "value":""
+    },
+    {
+    "date": false,
+    "category": false,
+    "valid": true,
+    "Field": "valid",
+    "value":""
+    },
+    {
+    "date": false,
+    "category": false,
+    "valid": false,
+    "Field": "sortorder",
+    "value":""
+    }
+    ],
+    "columnTitlesModal": [
+    {
+    "date": false,
+    "category": false,
+    "valid": false,
+    "Field": "title",
+    "value":""
+    },
+    {
+    "date": false,
+    "category": false,
+    "valid": false,
+    "Field": "url",
+    "value":""
+    },
+    {
+    "date": true,
+    "category": false,
+    "valid": false,
+    "Field": "effectivedate",
+    "value":""
+    },
+    {
+    "date": false,
+    "category": true,
+    "valid": false,
+    "Field": "category",
+    "value":""
+    },
+    {
+    "date": false,
+    "category": false,
+    "valid": true,
+    "Field": "valid",
+    "value":""
+    },
+    {
+    "date": false,
+    "category": false,
+    "valid": false,
+    "Field": "sortorder",
+    "value":""
+    }
+    ],
+    "columnTitleId": {
+        "Field":"id",
+        "value":""
+    },
+    "details": [
+    {
+    "id": 1,
+    "title": "個人情報の保護に関する法律（個人情報保護法）",
+    "url": "https://elaws.e-gov.go.jp/search/elawsSearch/elaws_search/lsg0500/detail?lawId=415AC0000000057",
+    "effectivedate": "2018-07-27",
+    "category": 1,
+    "valid": 1,
+    "sortorder": 1,
+    "checkbox":false
+    }    
+    ],
+    "categories": [
+    {
+    "id": 1,
+    "categoryname": "法律・条例等"
+    }    
+    ],
+    "isValid": [
+    {
+    "title": "有効",
+    "value": 1
+    }
+    ],
+    "specifiedPage": 1,
+    "allPages": 2,
+    "allCount": 17,
+    "displayCount": 10,
+    "pageNation": [
+    {
+    "active": true,
+    "page": 1
+    }
+    ],
+    "pagePrev": [
+    {
+    "prev": false,
+    "page": 1
+    }
+    ],
+    "pageNext": [
+    {
+    "next": true,
+    "page": 2
+    }
+    ]
+    }

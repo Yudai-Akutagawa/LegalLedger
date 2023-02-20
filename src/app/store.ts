@@ -1,14 +1,16 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import crudCategoryReducer from "../features/legalControlLedger/crudCategorySlice";
-import legalControlLedgerReducer from "../features/legalControlLedger/legalControlLedgerSlice";
-import messageReducer from "../features/legalControlLedger/messageSlice";
 import menuReducer from "../features/menu/menuSelectSlice";
+import legalControlLedgerReducer from "../features/legalControlLedger/legalControlLedgerSlice";
+import crudCategoryReducer from "../features/legalControlLedger/crudCategorySlice";
+import crudControlLedgerReducer from "../features/legalControlLedger/crudControlLedgerSlice";
+import messageReducer from "../features/legalControlLedger/messageSlice";
 
 export const store = configureStore({
   reducer: {
-    legalControlLedger: legalControlLedgerReducer,
     menu: menuReducer,
+    legalControlLedger: legalControlLedgerReducer,
     crudCategory: crudCategoryReducer,
+    crudControlLedger: crudControlLedgerReducer,
     message: messageReducer,
   },
 });

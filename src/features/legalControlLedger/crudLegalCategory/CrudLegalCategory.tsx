@@ -3,20 +3,20 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import Menu from "../../menu/Menu";
 import Navi from "../../navi/Navi";
 import {
-  changeCategoryCheckbox,
+  changeControlLedgerCheckbox,
   changeEditModal,
   setEditModal,
   changeInsertModal,
   clearInsertModal,
-  crudCategoryData,
-  fetchAsyncGetCategory,
+  crudControlLedgerData,
+  fetchAsyncGetControlLedger,
   setAllChecked,
   setAllUnchecked,
-} from "../crudCategorySlice";
+} from "../crudControlLedgerSlice";
 import MaintResult from "../maintResult/MaintResult";
 import {
-  deleteAsyncCategory,
-  editAsyncCategory,
+  deleteAsyncControlLedger,
+  editAsyncControlLedger,
   messageClear,
 } from "../messageSlice";
 import { insertAsyncCategory } from "../messageSlice";
