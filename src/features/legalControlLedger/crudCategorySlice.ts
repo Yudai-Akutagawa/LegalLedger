@@ -18,8 +18,7 @@ const initialState: crudCategoryState = {
 export const fetchAsyncGetCategory = createAsyncThunk(
   "crudCategory/get",
   async (page: number) => {
-    const { data } = await axios.get<APIDATA>(apiUrl);
-    // `${apiUrl}?page=${page}`
+    const { data } = await axios.get<APIDATA>(`${apiUrl}?page=${page}`);
     return { data: data };
   }
 );
@@ -29,13 +28,7 @@ const crudCategorySlice = createSlice({
   initialState: initialState,
   reducers: {
     changeCategoryCheckbox: (state, action) => {
-      const newDetails: {
-        id: number;
-        categoryname: string;
-        sortorder: number | null;
-        color: string;
-        checkbox: boolean;
-      }[] = [];
+      const newDetails: typeof state.data.details = [];
       state.data.details.map((detail) => {
         if (action.payload == detail.id) {
           const newRecord = {
@@ -56,7 +49,7 @@ const crudCategorySlice = createSlice({
           };
           newDetails.push(newRecord);
         }
-        state.data.details = [...newDetails];
+        return (state.data.details = [...newDetails]);
       });
     },
     setAllChecked: (state) => {
@@ -127,13 +120,13 @@ const crudCategorySlice = createSlice({
         }
         return newModals.push(newModal);
       });
-      state.data.columnTitles = newModals;
+      state.data.columnTitlesModal = newModals;
     },
     setEditModal: (state, action) => {
-      const newModals: typeof state.data.columnTitlesModal = [];
+      let newModals: typeof state.data.columnTitlesModal = [];
       state.data.details.map((detail) => {
         if (action.payload === detail.id) {
-          const newModals = [
+          newModals = [
             { Field: "categoryname", value: detail.categoryname },
             { Field: "sortorder", value: String(detail.sortorder) },
             { Field: "color", value: detail.color },
@@ -141,7 +134,9 @@ const crudCategorySlice = createSlice({
         }
         return newModals;
       });
+      state.data.columnTitleId = { Field: "id", value: action.payload };
       state.data.columnTitlesModal = newModals;
+      console.log(state.data.columnTitlesModal);
     },
   },
   extraReducers: (builder) => {

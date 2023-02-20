@@ -17,7 +17,7 @@ function App() {
 
   useEffect(() => {
     dispatch(fetchAsyncGet());
-    dispatch(fetchAsyncGetCategory(0));
+    dispatch(fetchAsyncGetCategory(1));
   }, [dispatch]);
 
   switch (menu) {

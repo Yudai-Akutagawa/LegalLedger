@@ -36,11 +36,14 @@ const CrudLegalCategory: React.FC = () => {
     dispatch(messageClear);
     if (allCheckCheckbox) {
       dispatch(setAllUnchecked());
-      setAllCheckCheckbox(false);
+      initCheckboxes();
     } else {
       dispatch(setAllChecked());
       setAllCheckCheckbox(true);
     }
+  };
+  const initCheckboxes = () => {
+    setAllCheckCheckbox(false);
   };
   const selectCheckboxes = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(messageClear);
@@ -233,9 +236,9 @@ const CrudLegalCategory: React.FC = () => {
                           data-toggle="modal"
                           id={`${detail.id}Edit`}
                           data-id={`${detail.id}`}
-                          onClick={(e) => {
+                          onClick={() => {
                             dispatch(messageClear());
-                            dispatch(setEditModal(e));
+                            dispatch(setEditModal(detail.id));
                           }}
                         >
                           <i
@@ -278,7 +281,11 @@ const CrudLegalCategory: React.FC = () => {
                     return (
                       <li
                         className="page-item"
-                        //onClick={() => {dispatch(fetchAsyncGetCategory(prev.page));initCheckboxes();dispatch(messageClear())}}
+                        onClick={() => {
+                          dispatch(fetchAsyncGetCategory(prev.page));
+                          initCheckboxes();
+                          dispatch(messageClear());
+                        }}
                       >
                         <a>Previous</a>
                       </li>
@@ -299,7 +306,11 @@ const CrudLegalCategory: React.FC = () => {
                       <li
                         className="page-item active"
                         key={index}
-                        // onClick=() => {dispatch(fetchAsyncGetCategory(nation.page));initCheckboxes();dispatch(messageClear())}}
+                        onClick={() => {
+                          dispatch(fetchAsyncGetCategory(nation.page));
+                          initCheckboxes();
+                          dispatch(messageClear());
+                        }}
                       >
                         <a className="page-link">{nation.page}</a>
                       </li>
@@ -308,9 +319,13 @@ const CrudLegalCategory: React.FC = () => {
                     /* それ以外のページの場合は以下をreturn() */
                     return (
                       <li
-                        className="page-item"
+                        className="page-item "
                         key={index}
-                        // onClick={() => {dispatch(fetchAsyncGetCategory(nation.page));initCheckboxes();dispatch(messageClear())}}
+                        onClick={() => {
+                          dispatch(fetchAsyncGetCategory(nation.page));
+                          initCheckboxes();
+                          dispatch(messageClear());
+                        }}
                       >
                         <a className="page-link">{nation.page}</a>
                       </li>
@@ -323,7 +338,11 @@ const CrudLegalCategory: React.FC = () => {
                     return (
                       <li
                         className="page-item"
-                        // onClick={() => {dispatch(fetchAsyncGetCategory(next.page));initCheckboxes();dispatch(messageClear())}}
+                        onClick={() => {
+                          dispatch(fetchAsyncGetCategory(next.page));
+                          initCheckboxes();
+                          dispatch(messageClear());
+                        }}
                       >
                         <a className="page-link">Next</a>
                       </li>
@@ -502,30 +521,29 @@ const CrudLegalCategory: React.FC = () => {
                     />
                   </div>
                   {/* stateのcolumnTitlesをmapし 各要素をcolmunTitlesModalとして、以下の内容をreturn()する*/}
-                  {data.columnTitles.map((colmunTitlesModal, index) => {
-                    if (index) {
-                      const editDom = (
-                        <div className="form-group">
-                          <label>{colmunTitlesModal.Field}</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id={`${colmunTitlesModal.Field}Edit`}
-                            name={colmunTitlesModal.Field}
-                            value={colmunTitlesModal.value}
-                            onChange={(e) =>
-                              dispatch(
-                                changeEditModal({
-                                  value: e.target.value,
-                                  field: colmunTitlesModal.Field,
-                                })
-                              )
-                            }
-                            required
-                          />
-                        </div>
-                      );
-                    }
+                  {data.columnTitlesModal.map((columnTitlesModal, index) => {
+                    let editDom = <></>;
+                    editDom = (
+                      <div className="form-group">
+                        <label>{columnTitlesModal.Field}</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id={`${columnTitlesModal.Field}Edit`}
+                          name={columnTitlesModal.Field}
+                          value={columnTitlesModal.value}
+                          onChange={(e) =>
+                            dispatch(
+                              changeEditModal({
+                                value: e.target.value,
+                                field: columnTitlesModal.Field,
+                              })
+                            )
+                          }
+                          required
+                        />
+                      </div>
+                    );
                     return editDom;
                   })}
                   <div className="modal-footer">
