@@ -3,23 +3,23 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import Menu from "../../menu/Menu";
 import Navi from "../../navi/Navi";
 import {
-  changeControlLedgerCheckbox,
+  changeCategoryCheckbox,
   changeEditModal,
   setEditModal,
   changeInsertModal,
   clearInsertModal,
-  crudControlLedgerData,
-  fetchAsyncGetControlLedger,
+  crudCategoryData,
+  fetchAsyncGetCategory,
   setAllChecked,
   setAllUnchecked,
-} from "../crudControlLedgerSlice";
+} from "../crudCategorySlice";
 import MaintResult from "../maintResult/MaintResult";
 import {
-  deleteAsyncControlLedger,
-  editAsyncControlLedger,
+  insertAsyncCategory,
+  deleteAsyncCategory,
+  editAsyncCategory,
   messageClear,
 } from "../messageSlice";
-import { insertAsyncCategory } from "../messageSlice";
 import insertJson from "../crudLegalCategory/insertCategory.json";
 import deleteJson from "../crudLegalCategory/deleteCategory.json";
 import editJson from "../crudLegalCategory/editCategory.json";

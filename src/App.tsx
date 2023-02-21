@@ -9,6 +9,7 @@ import { menuSelect } from "./features/menu/menuSelectSlice";
 import CrudLegalCategory from "./features/legalControlLedger/crudLegalCategory/CrudLegalCategory";
 import CrudControlLedger from "./features/legalControlLedger/crudControlLedger/CrudControlLedger";
 import { fetchAsyncGetCategory } from "./features/legalControlLedger/crudCategorySlice";
+import { fetchAsyncGetControlLedger } from "./features/legalControlLedger/crudControlLedgerSlice";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -18,6 +19,7 @@ function App() {
   useEffect(() => {
     dispatch(fetchAsyncGet());
     dispatch(fetchAsyncGetCategory(1));
+    dispatch(fetchAsyncGetControlLedger(1));
   }, [dispatch]);
 
   switch (menu) {

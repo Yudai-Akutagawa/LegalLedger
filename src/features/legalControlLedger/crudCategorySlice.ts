@@ -136,7 +136,6 @@ const crudCategorySlice = createSlice({
       });
       state.data.columnTitleId = { Field: "id", value: action.payload };
       state.data.columnTitlesModal = newModals;
-      console.log(state.data.columnTitlesModal);
     },
   },
   extraReducers: (builder) => {

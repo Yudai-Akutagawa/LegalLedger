@@ -1,31 +1,36 @@
+// import React from "react";
+// const CrudControlLedger: React.FC = () => {
+//   return <h1>CrudControlLedger</h1>;
+// };
+
 import React, { useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import Menu from "../../menu/Menu";
 import Navi from "../../navi/Navi";
 import {
-  changeCategoryCheckbox,
+  changeControlLedgerCheckbox,
   changeEditModal,
   setEditModal,
   changeInsertModal,
   clearInsertModal,
-  crudCategoryData,
-  fetchAsyncGetCategory,
+  crudControlLedgerData,
+  fetchAsyncGetControlLedger,
   setAllChecked,
   setAllUnchecked,
-} from "../crudCategorySlice";
+} from "../crudControlLedgerSlice";
 import MaintResult from "../maintResult/MaintResult";
 import {
-  deleteAsyncCategory,
-  editAsyncCategory,
+  insertAsyncControlLedger,
+  deleteAsyncControlLedger,
+  editAsyncControlLedger,
   messageClear,
 } from "../messageSlice";
-import { insertAsyncCategory } from "../messageSlice";
-import insertJson from "../crudLegalCategory/insertCategory.json";
-import deleteJson from "../crudLegalCategory/deleteCategory.json";
-import editJson from "../crudLegalCategory/editCategory.json";
+import insertJson from "../crudControlLedger/insertControlLedger.json";
+import deleteJson from "../crudControlLedger/deleteControlLedger.json";
+import editJson from "../crudControlLedger/editControlLedger.json";
 
-const CrudLegalCategory: React.FC = () => {
-  const data = useAppSelector(crudCategoryData);
+const CrudControlLedger: React.FC = () => {
+  const data = useAppSelector(crudControlLedgerData);
   const dispatch = useAppDispatch();
   const [allCheckCheckbox, setAllCheckCheckbox] = useState(false);
   const [deleteIds, setDeleteIds] = useState("なし");
@@ -47,7 +52,7 @@ const CrudLegalCategory: React.FC = () => {
   };
   const selectCheckboxes = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(messageClear);
-    dispatch(changeCategoryCheckbox(e.target.dataset.id));
+    dispatch(changeControlLedgerCheckbox(e.target.dataset.id));
     setAllCheckCheckbox(false);
   };
   //データ追加処理用関数
@@ -62,15 +67,18 @@ const CrudLegalCategory: React.FC = () => {
     e.preventDefault();
     const thisInsertData: typeof insertJson = {
       id: data.columnTitles[0].value,
-      categoryname: data.columnTitles[1].value,
-      sortorder: data.columnTitles[2].value,
-      color: data.columnTitles[3].value,
+      title: data.columnTitles[1].value,
+      url: data.columnTitles[2].value,
+      effectivedate: data.columnTitles[3].value,
+      category: data.columnTitles[4].value,
+      valid: data.columnTitles[5].value,
+      sortorder: data.columnTitles[6].value,
       currentPage: data.specifiedPage,
     };
     (insertClose.current as HTMLButtonElement).click();
     async function execInsert() {
-      await dispatch(insertAsyncCategory(thisInsertData));
-      await dispatch(fetchAsyncGetCategory(data.specifiedPage));
+      await dispatch(insertAsyncControlLedger(thisInsertData));
+      await dispatch(fetchAsyncGetControlLedger(data.specifiedPage));
     }
     execInsert();
   };
@@ -115,8 +123,8 @@ const CrudLegalCategory: React.FC = () => {
     };
     (deleteClose.current as HTMLButtonElement).click();
     async function execDelete() {
-      await dispatch(deleteAsyncCategory(thisDeleteData));
-      await dispatch(fetchAsyncGetCategory(data.specifiedPage));
+      await dispatch(deleteAsyncControlLedger(thisDeleteData));
+      await dispatch(fetchAsyncGetControlLedger(data.specifiedPage));
     }
     execDelete();
   };
@@ -126,17 +134,27 @@ const CrudLegalCategory: React.FC = () => {
     e.preventDefault();
     const thisEditData: typeof editJson = {
       id: data.columnTitleId.value,
-      categoryname: data.columnTitlesModal[0].value,
-      sortorder: data.columnTitlesModal[1].value,
-      color: data.columnTitlesModal[2].value,
+      title: data.columnTitlesModal[0].value,
+      url: data.columnTitlesModal[1].value,
+      effectivedate: data.columnTitlesModal[2].value,
+      category: data.columnTitlesModal[3].value,
+      valid: data.columnTitlesModal[4].value,
+      sortorder: data.columnTitlesModal[5].value,
       currentPage: data.specifiedPage,
     };
     (editClose.current as HTMLButtonElement).click();
     async function execEdit() {
-      await dispatch(editAsyncCategory(thisEditData));
-      await dispatch(fetchAsyncGetCategory(data.specifiedPage));
+      await dispatch(editAsyncControlLedger(thisEditData));
+      await dispatch(fetchAsyncGetControlLedger(data.specifiedPage));
     }
     execEdit();
+  };
+
+  ////長い項目のフル表示
+  const popupDetail = (
+    e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>
+  ) => {
+    alert(e.currentTarget.innerText);
   };
 
   return (
@@ -225,10 +243,31 @@ const CrudLegalCategory: React.FC = () => {
                           <label htmlFor={`checkbox${detail.id}`}></label>
                         </span>
                       </td>
-                      <td>{detail.id}</td>
-                      <td>{detail.categoryname}</td>
-                      <td>{detail.sortorder}</td>
-                      <td>{detail.color}</td>
+                      <td className="abbreviation max-width-30">{detail.id}</td>
+                      <td
+                        className="abbreviation max-width-180"
+                        onClick={popupDetail}
+                      >
+                        {detail.title}
+                      </td>
+                      <td
+                        className="abbreviation max-width-190"
+                        onClick={popupDetail}
+                      >
+                        {detail.url}
+                      </td>
+                      <td className="abbreviation max-width-80">
+                        {detail.effectivedate}
+                      </td>
+                      <td className="abbreviation max-width-30">
+                        {detail.category}
+                      </td>
+                      <td className="abbreviation max-width-30">
+                        {detail.valid}
+                      </td>
+                      <td className="abbreviation max-width-30">
+                        {detail.sortorder}
+                      </td>
                       <td>
                         <a
                           href="#editRecordModal"
@@ -282,7 +321,7 @@ const CrudLegalCategory: React.FC = () => {
                       <li
                         className="page-item"
                         onClick={() => {
-                          dispatch(fetchAsyncGetCategory(prev.page));
+                          dispatch(fetchAsyncGetControlLedger(prev.page));
                           initCheckboxes();
                           dispatch(messageClear());
                         }}
@@ -307,7 +346,7 @@ const CrudLegalCategory: React.FC = () => {
                         className="page-item active"
                         key={index}
                         onClick={() => {
-                          dispatch(fetchAsyncGetCategory(nation.page));
+                          dispatch(fetchAsyncGetControlLedger(nation.page));
                           initCheckboxes();
                           dispatch(messageClear());
                         }}
@@ -322,7 +361,7 @@ const CrudLegalCategory: React.FC = () => {
                         className="page-item "
                         key={index}
                         onClick={() => {
-                          dispatch(fetchAsyncGetCategory(nation.page));
+                          dispatch(fetchAsyncGetControlLedger(nation.page));
                           initCheckboxes();
                           dispatch(messageClear());
                         }}
@@ -339,7 +378,7 @@ const CrudLegalCategory: React.FC = () => {
                       <li
                         className="page-item"
                         onClick={() => {
-                          dispatch(fetchAsyncGetCategory(next.page));
+                          dispatch(fetchAsyncGetControlLedger(next.page));
                           initCheckboxes();
                           dispatch(messageClear());
                         }}
@@ -390,27 +429,109 @@ const CrudLegalCategory: React.FC = () => {
                 <div className="modal-body">
                   {/* stateのcolumnTitlesをmapし 各要素をcolumnTitleとして、以下の内容をreturn()する */}
                   {data.columnTitles.map((columnTitle, i) => {
-                    return (
-                      <div className="form-group">
-                        <label>{columnTitle.Field}</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id={columnTitle.Field}
-                          name={columnTitle.Field}
-                          value={columnTitle.value}
-                          onChange={(e) =>
-                            dispatch(
-                              changeInsertModal({
-                                value: e.target.value,
-                                field: columnTitle.Field,
-                              })
-                            )
-                          }
-                          required
-                        />
-                      </div>
-                    );
+                    if (columnTitle.date) {
+                      return (
+                        <div className="form-group">
+                          <label>{columnTitle.Field}</label>
+                          <input
+                            type="date"
+                            className="form-control"
+                            id={columnTitle.Field}
+                            name={columnTitle.Field}
+                            value={columnTitle.value}
+                            onChange={(e) =>
+                              dispatch(
+                                changeInsertModal({
+                                  value: e.target.value,
+                                  field: columnTitle.Field,
+                                })
+                              )
+                            }
+                            required
+                          />
+                        </div>
+                      );
+                    } else if (columnTitle.category) {
+                      return (
+                        <div className="form-group">
+                          <label>{columnTitle.Field}</label>
+                          <select
+                            className="form-control"
+                            id={columnTitle.Field}
+                            name={columnTitle.Field}
+                            value={columnTitle.value}
+                            onChange={(e) =>
+                              dispatch(
+                                changeInsertModal({
+                                  value: e.target.value,
+                                  field: columnTitle.Field,
+                                })
+                              )
+                            }
+                            required
+                          >
+                            {data.categories.map((category, i) => {
+                              return (
+                                <option value={`${category.id}`}>
+                                  {category.categoryname}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                      );
+                    } else if (columnTitle.valid) {
+                      return (
+                        <div className="form-group">
+                          <label>{columnTitle.Field}</label>
+                          <select
+                            className="form-control"
+                            id={columnTitle.Field}
+                            name={columnTitle.Field}
+                            value={columnTitle.value}
+                            onChange={(e) =>
+                              dispatch(
+                                changeInsertModal({
+                                  value: e.target.value,
+                                  field: columnTitle.Field,
+                                })
+                              )
+                            }
+                            required
+                          >
+                            {data.isValid.map((valid, i) => {
+                              return (
+                                <option value={`${valid.value}`}>
+                                  {valid.title}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div className="form-group">
+                          <label>{columnTitle.Field}</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            id={columnTitle.Field}
+                            name={columnTitle.Field}
+                            value={columnTitle.value}
+                            onChange={(e) =>
+                              dispatch(
+                                changeInsertModal({
+                                  value: e.target.value,
+                                  field: columnTitle.Field,
+                                })
+                              )
+                            }
+                            required
+                          />
+                        </div>
+                      );
+                    }
                   })}
                 </div>
                 <div className="modal-footer">
@@ -522,29 +643,109 @@ const CrudLegalCategory: React.FC = () => {
                   </div>
                   {/* stateのcolumnTitlesをmapし 各要素をcolmunTitlesModalとして、以下の内容をreturn()する*/}
                   {data.columnTitlesModal.map((columnTitlesModal, index) => {
-                    let editDom = <></>;
-                    editDom = (
-                      <div className="form-group">
-                        <label>{columnTitlesModal.Field}</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id={`${columnTitlesModal.Field}Edit`}
-                          name={columnTitlesModal.Field}
-                          value={columnTitlesModal.value}
-                          onChange={(e) =>
-                            dispatch(
-                              changeEditModal({
-                                value: e.target.value,
-                                field: columnTitlesModal.Field,
-                              })
-                            )
-                          }
-                          required
-                        />
-                      </div>
-                    );
-                    return editDom;
+                    if (columnTitlesModal.date) {
+                      return (
+                        <div className="form-group">
+                          <label>{columnTitlesModal.Field}</label>
+                          <input
+                            type="date"
+                            className="form-control"
+                            id={columnTitlesModal.Field}
+                            name={columnTitlesModal.Field}
+                            value={columnTitlesModal.value}
+                            onChange={(e) =>
+                              dispatch(
+                                changeEditModal({
+                                  value: e.target.value,
+                                  field: columnTitlesModal.Field,
+                                })
+                              )
+                            }
+                            required
+                          />
+                        </div>
+                      );
+                    } else if (columnTitlesModal.category) {
+                      return (
+                        <div className="form-group">
+                          <label>{columnTitlesModal.Field}</label>
+                          <select
+                            className="form-control"
+                            id={columnTitlesModal.Field}
+                            name={columnTitlesModal.Field}
+                            value={columnTitlesModal.value}
+                            onChange={(e) =>
+                              dispatch(
+                                changeEditModal({
+                                  value: e.target.value,
+                                  field: columnTitlesModal.Field,
+                                })
+                              )
+                            }
+                            required
+                          >
+                            {data.categories.map((category, i) => {
+                              return (
+                                <option value={`${category.id}`}>
+                                  {category.categoryname}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                      );
+                    } else if (columnTitlesModal.valid) {
+                      return (
+                        <div className="form-group">
+                          <label>{columnTitlesModal.Field}</label>
+                          <select
+                            className="form-control"
+                            id={columnTitlesModal.Field}
+                            name={columnTitlesModal.Field}
+                            value={columnTitlesModal.value}
+                            onChange={(e) =>
+                              dispatch(
+                                changeEditModal({
+                                  value: e.target.value,
+                                  field: columnTitlesModal.Field,
+                                })
+                              )
+                            }
+                            required
+                          >
+                            {data.isValid.map((valid, i) => {
+                              return (
+                                <option value={`${valid.value}`}>
+                                  {valid.title}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div className="form-group">
+                          <label>{columnTitlesModal.Field}</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            id={columnTitlesModal.Field}
+                            name={columnTitlesModal.Field}
+                            value={columnTitlesModal.value}
+                            onChange={(e) =>
+                              dispatch(
+                                changeEditModal({
+                                  value: e.target.value,
+                                  field: columnTitlesModal.Field,
+                                })
+                              )
+                            }
+                            required
+                          />
+                        </div>
+                      );
+                    }
                   })}
                   <div className="modal-footer">
                     <input
@@ -574,4 +775,4 @@ const CrudLegalCategory: React.FC = () => {
   );
 };
 
-export default CrudLegalCategory;
+export default CrudControlLedger;
