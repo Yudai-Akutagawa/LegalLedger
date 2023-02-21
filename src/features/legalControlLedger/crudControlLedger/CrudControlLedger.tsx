@@ -1,7 +1,9 @@
+// 関連するライブラリとコンポーネントをインポート
 import React, { useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import Menu from "../../menu/Menu";
 import Navi from "../../navi/Navi";
+// redux のcrudControlLedgerSliceスライスから関数をインポート
 import {
   changeControlLedgerCheckbox,
   changeEditModal,
@@ -13,26 +15,29 @@ import {
   setAllChecked,
   setAllUnchecked,
 } from "../crudControlLedgerSlice";
-import MaintResult from "../maintResult/MaintResult";
+// redux のmessageSliceスライスから関数をインポート
 import {
   insertAsyncControlLedger,
   deleteAsyncControlLedger,
   editAsyncControlLedger,
   messageClear,
 } from "../messageSlice";
-import insertJson from "../crudControlLedger/insertControlLedger.json";
-import deleteJson from "../crudControlLedger/deleteControlLedger.json";
-import editJson from "../crudControlLedger/editControlLedger.json";
+
+import MaintResult from "../maintResult/MaintResult"; //MaintResultコンポーネントのインポート
+import insertJson from "../crudControlLedger/insertControlLedger.json"; // データを追加する際に必要なJSONデータ定義
+import deleteJson from "../crudControlLedger/deleteControlLedger.json"; // データを削除する際に必要なJSONデータ定義
+import editJson from "../crudControlLedger/editControlLedger.json"; // データを編集する際に必要なJSONデータ定義
 
 const CrudControlLedger: React.FC = () => {
   const data = useAppSelector(crudControlLedgerData);
   const dispatch = useAppDispatch();
-  const [allCheckCheckbox, setAllCheckCheckbox] = useState(false);
-  const [deleteIds, setDeleteIds] = useState("なし");
-  const [multiple, setMultiple] = useState("single");
+  const [allCheckCheckbox, setAllCheckCheckbox] = useState(false); // 全選択チェックボックスの選択/未選択のための状態を管理する
+  const [deleteIds, setDeleteIds] = useState("なし"); //削除するIDを格納する状態を管理する
+  const [multiple, setMultiple] = useState("single"); // 複数選択を管理する状態を管理する
 
-  //チェックボックス処理用関数
-  const onClickAllCheckbox = () => {
+  /* チェックボックス処理用関数 */
+  // 全選択チェックボックスクリック時の処理
+  const selectAllCheckbox = () => {
     dispatch(messageClear);
     if (allCheckCheckbox) {
       dispatch(setAllUnchecked());
@@ -42,34 +47,27 @@ const CrudControlLedger: React.FC = () => {
       setAllCheckCheckbox(true);
     }
   };
+  // 全選択チェックボックスをFALSEに初期化
   const initCheckboxes = () => {
     setAllCheckCheckbox(false);
   };
+  // 個別チェックボックスクリック時の処理
   const selectCheckboxes = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(messageClear);
     dispatch(changeControlLedgerCheckbox(e.target.dataset.id));
     setAllCheckCheckbox(false);
   };
-  //データ追加処理用関数
-  const insertClose: React.RefObject<HTMLButtonElement> = useRef(null);
+
+  /* データ追加処理用関数 */
+  // データ追加用モーダルを初期化
   const initialAddModal = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     dispatch(messageClear);
     dispatch(clearInsertModal());
-    dispatch(
-      changeInsertModal({
-        value: "1",
-        field: "category",
-      })
-    );
-    dispatch(
-      changeInsertModal({
-        value: "1",
-        field: "valid",
-      })
-    );
   };
+  const insertClose: React.RefObject<HTMLButtonElement> = useRef(null); // 追加モーダルを閉じるアクションを代入する変数
+  // データ追加用モーダル内でAddを押した際に、APIを通してデータを追加する処理
   const handleInsertSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const thisInsertData: typeof insertJson = {
@@ -82,15 +80,15 @@ const CrudControlLedger: React.FC = () => {
       sortorder: data.columnTitles[6].value,
       currentPage: data.specifiedPage,
     };
-    (insertClose.current as HTMLButtonElement).click();
+    (insertClose.current as HTMLButtonElement).click(); // 追加モーダルを閉じる
     async function execInsert() {
       await dispatch(insertAsyncControlLedger(thisInsertData));
       await dispatch(fetchAsyncGetControlLedger(data.specifiedPage));
     }
     execInsert();
   };
-  //データ削除処理用関数
-  const deleteClose: React.RefObject<HTMLButtonElement> = useRef(null);
+  /* データ削除処理用関数 */
+  // データ追加用モーダルに削除する項目のidをセット（単体選択時）
   const setDeleteModal = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
@@ -100,27 +98,29 @@ const CrudControlLedger: React.FC = () => {
     setDeleteIds(id);
     setMultiple("single");
   };
+  // データ追加用モーダルに削除する項目のidをセット（複数選択時）
   const setDeleteModalSelected = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     e.preventDefault();
     dispatch(messageClear);
-    const ids: number[] = [];
+    const checkedIds: number[] = [];
     data.details.map((detail) => {
       if (detail.checkbox === true) {
-        ids.push(detail.id);
+        checkedIds.push(detail.id);
       }
-      return ids;
+      return checkedIds;
     });
-    let strIds = "";
-    if (ids.length) {
-      strIds = ids.join();
+    let DeleteIds = "";
+    if (checkedIds.length) {
+      DeleteIds = checkedIds.join(); // 配列に格納されたidをカンマで区切った文字列に変換
     } else {
-      strIds = "なし";
+      DeleteIds = "なし";
     }
-    setDeleteIds(strIds);
+    setDeleteIds(DeleteIds);
     setMultiple("multiple");
   };
+  const deleteClose: React.RefObject<HTMLButtonElement> = useRef(null); // 削除モーダルを閉じるアクションを代入する変数
   const handleDeleteSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const thisDeleteData: typeof deleteJson = {
@@ -128,7 +128,7 @@ const CrudControlLedger: React.FC = () => {
       multiple: multiple,
       currentPage: data.specifiedPage,
     };
-    (deleteClose.current as HTMLButtonElement).click();
+    (deleteClose.current as HTMLButtonElement).click(); // 削除モーダルを閉じる
     async function execDelete() {
       await dispatch(deleteAsyncControlLedger(thisDeleteData));
       await dispatch(fetchAsyncGetControlLedger(data.specifiedPage));
@@ -220,7 +220,7 @@ const CrudControlLedger: React.FC = () => {
                         type="checkbox"
                         id="selectAll"
                         checked={allCheckCheckbox}
-                        onChange={onClickAllCheckbox}
+                        onChange={selectAllCheckbox}
                       />
                       <label htmlFor="selectAll"></label>
                     </span>

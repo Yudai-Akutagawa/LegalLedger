@@ -104,6 +104,9 @@ const crudControlLedgerSlice = createSlice({
         };
         return newModals.push(newModal);
       });
+      // セレクトボックス未選択のまま追加を実行した際に、エラーが起きない様初期化
+      newModals[4].value = "1";
+      newModals[5].value = "1";
       state.data.columnTitles = newModals;
     },
     changeInsertModal: (
