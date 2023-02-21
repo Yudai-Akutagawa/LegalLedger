@@ -1,8 +1,3 @@
-// import React from "react";
-// const CrudControlLedger: React.FC = () => {
-//   return <h1>CrudControlLedger</h1>;
-// };
-
 import React, { useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import Menu from "../../menu/Menu";
@@ -62,6 +57,18 @@ const CrudControlLedger: React.FC = () => {
   ) => {
     dispatch(messageClear);
     dispatch(clearInsertModal());
+    dispatch(
+      changeInsertModal({
+        value: "1",
+        field: "category",
+      })
+    );
+    dispatch(
+      changeInsertModal({
+        value: "1",
+        field: "valid",
+      })
+    );
   };
   const handleInsertSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -500,11 +507,21 @@ const CrudControlLedger: React.FC = () => {
                             required
                           >
                             {data.isValid.map((valid, i) => {
-                              return (
-                                <option value={`${valid.value}`}>
-                                  {valid.title}
-                                </option>
-                              );
+                              let validDom;
+                              if (i === 0) {
+                                validDom = (
+                                  <option value={`${valid.value}`} selected>
+                                    {valid.title}
+                                  </option>
+                                );
+                              } else {
+                                validDom = (
+                                  <option value={`${valid.value}`}>
+                                    {valid.title}
+                                  </option>
+                                );
+                              }
+                              return validDom;
                             })}
                           </select>
                         </div>
