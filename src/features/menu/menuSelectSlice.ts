@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useAppDispatch } from "../../app/hooks";
 import { RootState } from "../../app/store";
-import { fetchAsyncGetCategory } from "../legalControlLedger/crudCategorySlice";
 import dataJson from "./menuSelect.json";
 
 type menuStateType = { data: typeof dataJson };

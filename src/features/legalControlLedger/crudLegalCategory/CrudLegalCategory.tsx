@@ -1,7 +1,9 @@
+// 関連するライブラリとコンポーネントをインポート
 import React, { useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import Menu from "../../menu/Menu";
 import Navi from "../../navi/Navi";
+// redux のcrudCategorySliceスライスから関数をインポート
 import {
   changeCategoryCheckbox,
   changeEditModal,
@@ -13,26 +15,28 @@ import {
   setAllChecked,
   setAllUnchecked,
 } from "../crudCategorySlice";
-import MaintResult from "../maintResult/MaintResult";
+// redux のmessageSliceスライスから関数をインポート
 import {
   insertAsyncCategory,
   deleteAsyncCategory,
   editAsyncCategory,
   messageClear,
 } from "../messageSlice";
-import insertJson from "../crudLegalCategory/insertCategory.json";
-import deleteJson from "../crudLegalCategory/deleteCategory.json";
-import editJson from "../crudLegalCategory/editCategory.json";
+import MaintResult from "../maintResult/MaintResult"; //MaintResultコンポーネントのインポート
+import insertJson from "../crudLegalCategory/insertCategory.json"; // データを追加する際に必要なJSONデータ定義
+import deleteJson from "../crudLegalCategory/deleteCategory.json"; // データを削除する際に必要なJSONデータ定義
+import editJson from "../crudLegalCategory/editCategory.json"; // データを編集する際に必要なJSONデータ定義
 
 const CrudLegalCategory: React.FC = () => {
   const data = useAppSelector(crudCategoryData);
   const dispatch = useAppDispatch();
-  const [allCheckCheckbox, setAllCheckCheckbox] = useState(false);
-  const [deleteIds, setDeleteIds] = useState("なし");
-  const [multiple, setMultiple] = useState("single");
+  const [allCheckCheckbox, setAllCheckCheckbox] = useState(false); // 全選択チェックボックスの選択/未選択のための状態を管理する
+  const [deleteIds, setDeleteIds] = useState("なし"); //削除するIDを格納する状態を管理する
+  const [multiple, setMultiple] = useState("single"); // 複数選択を管理する状態を管理する
 
-  //チェックボックス処理用関数
-  const onClickAllCheckbox = () => {
+  /* チェックボックス処理用関数 */
+  // 全選択チェックボックスクリック時の処理
+  const selectAllCheckbox = () => {
     dispatch(messageClear);
     if (allCheckCheckbox) {
       dispatch(setAllUnchecked());
@@ -42,22 +46,27 @@ const CrudLegalCategory: React.FC = () => {
       setAllCheckCheckbox(true);
     }
   };
+  // 全選択チェックボックスをFALSEに初期化
   const initCheckboxes = () => {
     setAllCheckCheckbox(false);
   };
+  // 個別チェックボックスクリック時の処理
   const selectCheckboxes = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(messageClear);
-    dispatch(changeCategoryCheckbox(e.target.dataset.id));
+    dispatch(changeCategoryCheckbox(Number(e.target.dataset.id)));
     setAllCheckCheckbox(false);
   };
-  //データ追加処理用関数
-  const insertClose: React.RefObject<HTMLButtonElement> = useRef(null);
+
+  /* データ追加処理用関数 */
+  // データ追加用モーダルを初期化
   const initialAddModal = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     dispatch(messageClear);
     dispatch(clearInsertModal());
   };
+  const insertClose: React.RefObject<HTMLButtonElement> = useRef(null); // 追加モーダルを閉じるアクションを代入する変数
+  // データ追加用モーダル内でAddを押した際に、APIを通してデータを追加する処理
   const handleInsertSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const thisInsertData: typeof insertJson = {
@@ -67,15 +76,16 @@ const CrudLegalCategory: React.FC = () => {
       color: data.columnTitles[3].value,
       currentPage: data.specifiedPage,
     };
-    (insertClose.current as HTMLButtonElement).click();
+    (insertClose.current as HTMLButtonElement).click(); // 追加モーダルを閉じる
     async function execInsert() {
-      await dispatch(insertAsyncCategory(thisInsertData));
-      await dispatch(fetchAsyncGetCategory(data.specifiedPage));
+      await dispatch(insertAsyncCategory(thisInsertData)); //データを追加
+      await dispatch(fetchAsyncGetCategory(data.specifiedPage)); //データを再取得
     }
     execInsert();
   };
-  //データ削除処理用関数
-  const deleteClose: React.RefObject<HTMLButtonElement> = useRef(null);
+
+  /* データ削除処理用関数 */
+  // データ削除用モーダルに削除する項目のidをセット（単体選択時）
   const setDeleteModal = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
@@ -85,6 +95,7 @@ const CrudLegalCategory: React.FC = () => {
     setDeleteIds(id);
     setMultiple("single");
   };
+  // データ削除用モーダルに削除する項目のidをセット（複数選択時）
   const setDeleteModalSelected = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
@@ -106,6 +117,8 @@ const CrudLegalCategory: React.FC = () => {
     setDeleteIds(strIds);
     setMultiple("multiple");
   };
+  const deleteClose: React.RefObject<HTMLButtonElement> = useRef(null); // 削除モーダルを閉じるアクションを代入する変数
+  // データ削除用モーダル内でdeleteを押した際に、APIを通してデータを削除する処理
   const handleDeleteSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const thisDeleteData: typeof deleteJson = {
@@ -113,15 +126,17 @@ const CrudLegalCategory: React.FC = () => {
       multiple: multiple,
       currentPage: data.specifiedPage,
     };
-    (deleteClose.current as HTMLButtonElement).click();
+    (deleteClose.current as HTMLButtonElement).click(); // 編集モーダルを閉じる
     async function execDelete() {
-      await dispatch(deleteAsyncCategory(thisDeleteData));
-      await dispatch(fetchAsyncGetCategory(data.specifiedPage));
+      await dispatch(deleteAsyncCategory(thisDeleteData)); //データを編集
+      await dispatch(fetchAsyncGetCategory(data.specifiedPage)); //データを編集
     }
     execDelete();
   };
-  //データ更新処理用関数
-  const editClose: React.RefObject<HTMLButtonElement> = useRef(null);
+
+  /* データ編集処理用関数 */
+  const editClose: React.RefObject<HTMLButtonElement> = useRef(null); // 編集モーダルを閉じるアクションを代入する変数
+  // データ編集用モーダル内でsaveを押した際に、APIを通してデータを編集する処理
   const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const thisEditData: typeof editJson = {
@@ -131,10 +146,10 @@ const CrudLegalCategory: React.FC = () => {
       color: data.columnTitlesModal[2].value,
       currentPage: data.specifiedPage,
     };
-    (editClose.current as HTMLButtonElement).click();
+    (editClose.current as HTMLButtonElement).click(); // 編集モーダルを閉じる
     async function execEdit() {
-      await dispatch(editAsyncCategory(thisEditData));
-      await dispatch(fetchAsyncGetCategory(data.specifiedPage));
+      await dispatch(editAsyncCategory(thisEditData)); //データを編集
+      await dispatch(fetchAsyncGetCategory(data.specifiedPage)); //データを再取得
     }
     execEdit();
   };
@@ -195,7 +210,7 @@ const CrudLegalCategory: React.FC = () => {
                         type="checkbox"
                         id="selectAll"
                         checked={allCheckCheckbox}
-                        onChange={onClickAllCheckbox}
+                        onChange={selectAllCheckbox}
                       />
                       <label htmlFor="selectAll"></label>
                     </span>
@@ -270,6 +285,7 @@ const CrudLegalCategory: React.FC = () => {
                 })}
               </tbody>
             </table>
+
             <div className="clearfix">
               <div className="hint-text">
                 全 <b>{data.allCount}</b> 件中 <b>{data.displayCount}</b> 件表示

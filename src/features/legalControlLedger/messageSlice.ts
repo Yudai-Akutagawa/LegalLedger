@@ -23,9 +23,11 @@ const apiEditControlLedgerUrl =
 type INSERTDATACATEGORY = typeof insertJson;
 type DELETEDATACATEGORY = typeof deleteJson;
 type EDITDATACATEGORY = typeof editJson;
+
 type INSERTDATACONTROLLEDGER = typeof insertControlLedgerJson;
 type DELETEDATACONTROLLEDGER = typeof deleteControlLedgerJson;
 type EDITDATACONTROLLEDGER = typeof editControlLedgerJson;
+
 type RESPONSEDATA = typeof responseJson;
 
 type messageState = {
@@ -36,7 +38,7 @@ const initialState: messageState = {
   data: responseJson,
 };
 
-//追加用非同期関数の見本 axios.postを使う axios.postの第2引数に、非同期関数の引数に設定した追加用データを設定する
+//カテゴリーテーブル追加用非同期関数
 export const insertAsyncCategory = createAsyncThunk(
   "category/insert",
   async (insertData: INSERTDATACATEGORY) => {
@@ -47,6 +49,7 @@ export const insertAsyncCategory = createAsyncThunk(
     return { data: data };
   }
 );
+//カテゴリーテーブル削除用非同期関数
 export const deleteAsyncCategory = createAsyncThunk(
   "category/delete",
   async (deleteData: DELETEDATACATEGORY) => {
@@ -57,6 +60,7 @@ export const deleteAsyncCategory = createAsyncThunk(
     return { data: data };
   }
 );
+//カテゴリーテーブル編集用非同期関数
 export const editAsyncCategory = createAsyncThunk(
   "category/edit",
   async (editData: EDITDATACATEGORY) => {
@@ -68,6 +72,7 @@ export const editAsyncCategory = createAsyncThunk(
   }
 );
 
+//明細テーブル追加用非同期関数
 export const insertAsyncControlLedger = createAsyncThunk(
   "ControlLedger/insert",
   async (insertData: INSERTDATACONTROLLEDGER) => {
@@ -78,6 +83,7 @@ export const insertAsyncControlLedger = createAsyncThunk(
     return { data: data };
   }
 );
+//明細テーブル削除用非同期関数
 export const deleteAsyncControlLedger = createAsyncThunk(
   "ControlLedger/delete",
   async (deleteData: DELETEDATACONTROLLEDGER) => {
@@ -88,6 +94,7 @@ export const deleteAsyncControlLedger = createAsyncThunk(
     return { data: data };
   }
 );
+//明細テーブル編集用非同期関数
 export const editAsyncControlLedger = createAsyncThunk(
   "ControlLedger/edit",
   async (editData: EDITDATACONTROLLEDGER) => {
@@ -99,6 +106,7 @@ export const editAsyncControlLedger = createAsyncThunk(
   }
 );
 
+// 追加削除編集の実行および返却メッセージ格納用スライス
 const messageSlice = createSlice({
   name: "message",
   initialState: initialState,

@@ -15,6 +15,7 @@ const initialState: legalControlLedgerState = {
   data: dataJson,
 };
 
+// 非同期処理で一覧データを取得
 export const fetchAsyncGet = createAsyncThunk(
   "legalControlLedger/get",
   async () => {
@@ -23,6 +24,7 @@ export const fetchAsyncGet = createAsyncThunk(
   }
 );
 
+// 一覧データスライス
 const legalControlLedgerSlice = createSlice({
   name: "legalControlLedger",
   initialState: initialState,

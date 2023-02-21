@@ -22,7 +22,6 @@ import {
   editAsyncControlLedger,
   messageClear,
 } from "../messageSlice";
-
 import MaintResult from "../maintResult/MaintResult"; //MaintResultコンポーネントのインポート
 import insertJson from "../crudControlLedger/insertControlLedger.json"; // データを追加する際に必要なJSONデータ定義
 import deleteJson from "../crudControlLedger/deleteControlLedger.json"; // データを削除する際に必要なJSONデータ定義
@@ -54,7 +53,7 @@ const CrudControlLedger: React.FC = () => {
   // 個別チェックボックスクリック時の処理
   const selectCheckboxes = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(messageClear);
-    dispatch(changeControlLedgerCheckbox(e.target.dataset.id));
+    dispatch(changeControlLedgerCheckbox(Number(e.target.dataset.id)));
     setAllCheckCheckbox(false);
   };
 
@@ -82,13 +81,13 @@ const CrudControlLedger: React.FC = () => {
     };
     (insertClose.current as HTMLButtonElement).click(); // 追加モーダルを閉じる
     async function execInsert() {
-      await dispatch(insertAsyncControlLedger(thisInsertData));
-      await dispatch(fetchAsyncGetControlLedger(data.specifiedPage));
+      await dispatch(insertAsyncControlLedger(thisInsertData)); //データを追加
+      await dispatch(fetchAsyncGetControlLedger(data.specifiedPage)); //データを再取得
     }
     execInsert();
   };
   /* データ削除処理用関数 */
-  // データ追加用モーダルに削除する項目のidをセット（単体選択時）
+  // データ削除用モーダルに削除する項目のidをセット（単体選択時）
   const setDeleteModal = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
@@ -98,7 +97,7 @@ const CrudControlLedger: React.FC = () => {
     setDeleteIds(id);
     setMultiple("single");
   };
-  // データ追加用モーダルに削除する項目のidをセット（複数選択時）
+  // データ削除用モーダルに削除する項目のidをセット（複数選択時）
   const setDeleteModalSelected = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
@@ -121,6 +120,7 @@ const CrudControlLedger: React.FC = () => {
     setMultiple("multiple");
   };
   const deleteClose: React.RefObject<HTMLButtonElement> = useRef(null); // 削除モーダルを閉じるアクションを代入する変数
+  // データ削除用モーダル内でdeleteを押した際に、APIを通してデータを削除する処理
   const handleDeleteSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const thisDeleteData: typeof deleteJson = {
@@ -130,13 +130,15 @@ const CrudControlLedger: React.FC = () => {
     };
     (deleteClose.current as HTMLButtonElement).click(); // 削除モーダルを閉じる
     async function execDelete() {
-      await dispatch(deleteAsyncControlLedger(thisDeleteData));
-      await dispatch(fetchAsyncGetControlLedger(data.specifiedPage));
+      await dispatch(deleteAsyncControlLedger(thisDeleteData)); //データを削除
+      await dispatch(fetchAsyncGetControlLedger(data.specifiedPage)); //データを再取得
     }
     execDelete();
   };
-  //データ更新処理用関数
-  const editClose: React.RefObject<HTMLButtonElement> = useRef(null);
+
+  /* データ編集処理用関数 */
+  const editClose: React.RefObject<HTMLButtonElement> = useRef(null); // 編集モーダルを閉じるアクションを代入する変数
+  // データ編集用モーダル内でsaveを押した際に、APIを通してデータを編集する処理
   const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const thisEditData: typeof editJson = {
@@ -149,10 +151,10 @@ const CrudControlLedger: React.FC = () => {
       sortorder: data.columnTitlesModal[5].value,
       currentPage: data.specifiedPage,
     };
-    (editClose.current as HTMLButtonElement).click();
+    (editClose.current as HTMLButtonElement).click(); // 編集モーダルを閉じる
     async function execEdit() {
-      await dispatch(editAsyncControlLedger(thisEditData));
-      await dispatch(fetchAsyncGetControlLedger(data.specifiedPage));
+      await dispatch(editAsyncControlLedger(thisEditData)); //データを編集
+      await dispatch(fetchAsyncGetControlLedger(data.specifiedPage)); //データを再取得
     }
     execEdit();
   };
