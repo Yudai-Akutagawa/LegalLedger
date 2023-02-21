@@ -86,6 +86,7 @@ const CrudControlLedger: React.FC = () => {
     }
     execInsert();
   };
+
   /* データ削除処理用関数 */
   // データ削除用モーダルに削除する項目のidをセット（単体選択時）
   const setDeleteModal = (
@@ -318,6 +319,7 @@ const CrudControlLedger: React.FC = () => {
                 })}
               </tbody>
             </table>
+
             <div className="clearfix">
               <div className="hint-text">
                 全 <b>{data.allCount}</b> 件中 <b>{data.displayCount}</b> 件表示

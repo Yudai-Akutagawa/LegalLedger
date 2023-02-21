@@ -1,10 +1,8 @@
-import React, { Component, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { fetchAsyncGet } from "./features/legalControlLedger/legalControlLedgerSlice";
 import "./App.css";
 import LegalControlLedger from "./features/legalControlLedger/legalControlLedger/LegalControlLedger";
-import Navi from "./features/navi/Navi";
-import Menu from "./features/menu/Menu";
 import { menuSelect } from "./features/menu/menuSelectSlice";
 import CrudLegalCategory from "./features/legalControlLedger/crudLegalCategory/CrudLegalCategory";
 import CrudControlLedger from "./features/legalControlLedger/crudControlLedger/CrudControlLedger";
