@@ -243,7 +243,29 @@ const CrudLegalCategory: React.FC = () => {
                       <td>{detail.id}</td>
                       <td>{detail.categoryname}</td>
                       <td>{detail.sortorder}</td>
-                      <td>{detail.color}</td>
+                      <td>
+                        <svg
+                          className="bd-placeholder-img mr-1 rounded"
+                          width="16"
+                          height="16"
+                          xmlns="http://www.w3.org/2000/svg"
+                          preserveAspectRatio="xMidYMid slice"
+                          focusable="false"
+                          role="img"
+                          aria-label="Placeholder: 32x32"
+                        >
+                          <title>Placeholder</title>
+                          <rect
+                            width="100%"
+                            height="100%"
+                            fill={detail.color}
+                          />
+                          <text x="50%" y="50%" fill={detail.color} dy=".3em">
+                            32x32
+                          </text>
+                        </svg>
+                        {detail.color}
+                      </td>
                       <td>
                         <a
                           href="#editRecordModal"
@@ -406,27 +428,101 @@ const CrudLegalCategory: React.FC = () => {
                 <div className="modal-body">
                   {/* stateのcolumnTitlesをmapし 各要素をcolumnTitleとして、以下の内容をreturn()する */}
                   {data.columnTitles.map((columnTitle, i) => {
-                    return (
-                      <div className="form-group">
-                        <label>{columnTitle.Field}</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id={columnTitle.Field}
-                          name={columnTitle.Field}
-                          value={columnTitle.value}
-                          onChange={(e) =>
-                            dispatch(
-                              changeInsertModal({
-                                value: e.target.value,
-                                field: columnTitle.Field,
-                              })
-                            )
-                          }
-                          required
-                        />
-                      </div>
-                    );
+                    let insertDom = <></>;
+                    if (columnTitle.Field === "color") {
+                      insertDom = (
+                        <div className="form-group">
+                          <label>{columnTitle.Field}&nbsp;</label>
+                          <table>
+                            <td width={50}>
+                              <input
+                                type="color"
+                                className="form-control form-control-color"
+                                id={columnTitle.Field}
+                                name={columnTitle.Field}
+                                value={columnTitle.value}
+                                onChange={(e) =>
+                                  dispatch(
+                                    changeInsertModal({
+                                      value: e.target.value,
+                                      field: columnTitle.Field,
+                                    })
+                                  )
+                                }
+                                required
+                              />
+                            </td>
+                            <td width={500}>
+                              <input
+                                type="text"
+                                className="form-control"
+                                id={columnTitle.Field}
+                                name={columnTitle.Field}
+                                value={columnTitle.value}
+                                onChange={(e) =>
+                                  dispatch(
+                                    changeInsertModal({
+                                      value: e.target.value,
+                                      field: columnTitle.Field,
+                                    })
+                                  )
+                                }
+                                required
+                              />
+                            </td>
+                          </table>
+                        </div>
+                      );
+                    } else if (columnTitle.Field === "id") {
+                      insertDom = (
+                        <div className="form-group">
+                          <label>{columnTitle.Field}</label>
+                          <input
+                            type="text"
+                            list="datalistOptions"
+                            className="form-control"
+                            id={columnTitle.Field}
+                            name={columnTitle.Field}
+                            value={columnTitle.value}
+                            onChange={(e) =>
+                              dispatch(
+                                changeInsertModal({
+                                  value: e.target.value,
+                                  field: columnTitle.Field,
+                                })
+                              )
+                            }
+                            required
+                          />
+                          <datalist id="datalistOptions">
+                            <option value={data.allCount + 1} />
+                          </datalist>
+                        </div>
+                      );
+                    } else {
+                      insertDom = (
+                        <div className="form-group">
+                          <label>{columnTitle.Field}</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            id={columnTitle.Field}
+                            name={columnTitle.Field}
+                            value={columnTitle.value}
+                            onChange={(e) =>
+                              dispatch(
+                                changeInsertModal({
+                                  value: e.target.value,
+                                  field: columnTitle.Field,
+                                })
+                              )
+                            }
+                            required
+                          />
+                        </div>
+                      );
+                    }
+                    return insertDom;
                   })}
                 </div>
                 <div className="modal-footer">
@@ -539,27 +635,73 @@ const CrudLegalCategory: React.FC = () => {
                   {/* stateのcolumnTitlesをmapし 各要素をcolmunTitlesModalとして、以下の内容をreturn()する*/}
                   {data.columnTitlesModal.map((columnTitlesModal, index) => {
                     let editDom = <></>;
-                    editDom = (
-                      <div className="form-group">
-                        <label>{columnTitlesModal.Field}</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id={`${columnTitlesModal.Field}Edit`}
-                          name={columnTitlesModal.Field}
-                          value={columnTitlesModal.value}
-                          onChange={(e) =>
-                            dispatch(
-                              changeEditModal({
-                                value: e.target.value,
-                                field: columnTitlesModal.Field,
-                              })
-                            )
-                          }
-                          required
-                        />
-                      </div>
-                    );
+                    if (columnTitlesModal.Field === "color") {
+                      editDom = (
+                        <div className="form-group">
+                          <label>{columnTitlesModal.Field}&nbsp;</label>
+                          <table>
+                            <td width={50}>
+                              <input
+                                type="color"
+                                className="form-control form-control-color"
+                                id={columnTitlesModal.Field}
+                                name={columnTitlesModal.Field}
+                                value={columnTitlesModal.value}
+                                onChange={(e) =>
+                                  dispatch(
+                                    changeEditModal({
+                                      value: e.target.value,
+                                      field: columnTitlesModal.Field,
+                                    })
+                                  )
+                                }
+                                required
+                              />
+                            </td>
+                            <td width={500}>
+                              <input
+                                type="text"
+                                className="form-control"
+                                id={columnTitlesModal.Field}
+                                name={columnTitlesModal.Field}
+                                value={columnTitlesModal.value}
+                                onChange={(e) =>
+                                  dispatch(
+                                    changeEditModal({
+                                      value: e.target.value,
+                                      field: columnTitlesModal.Field,
+                                    })
+                                  )
+                                }
+                                required
+                              />
+                            </td>
+                          </table>
+                        </div>
+                      );
+                    } else {
+                      editDom = (
+                        <div className="form-group">
+                          <label>{columnTitlesModal.Field}</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            id={`${columnTitlesModal.Field}Edit`}
+                            name={columnTitlesModal.Field}
+                            value={columnTitlesModal.value}
+                            onChange={(e) =>
+                              dispatch(
+                                changeEditModal({
+                                  value: e.target.value,
+                                  field: columnTitlesModal.Field,
+                                })
+                              )
+                            }
+                            required
+                          />
+                        </div>
+                      );
+                    }
                     return editDom;
                   })}
                   <div className="modal-footer">

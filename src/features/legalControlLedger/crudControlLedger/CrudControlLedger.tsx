@@ -33,6 +33,8 @@ const CrudControlLedger: React.FC = () => {
   const [allCheckCheckbox, setAllCheckCheckbox] = useState(false); // 全選択チェックボックスの選択/未選択のための状態を管理する
   const [deleteIds, setDeleteIds] = useState("なし"); //削除するIDを格納する状態を管理する
   const [multiple, setMultiple] = useState("single"); // 複数選択を管理する状態を管理する
+  const [searchText, setSearchText] = useState("");
+  const [searchInputText, setSearchInputText] = useState("");
 
   /* チェックボックス処理用関数 */
   // 全選択チェックボックスクリック時の処理
@@ -214,6 +216,47 @@ const CrudControlLedger: React.FC = () => {
               </div>
             </div>
 
+            <div className="row">
+              <div className="col-1">
+                <button
+                  className="btn btn-primary"
+                  type="button"
+                  id="button-addon1"
+                  onClick={(e) => {
+                    setSearchText(searchInputText);
+                  }}
+                >
+                  Search
+                </button>
+              </div>
+              <div className="col-1">
+                <button
+                  className="btn btn-primary"
+                  type="button"
+                  id="button-addon1"
+                  onClick={() => {
+                    setSearchText("");
+                    setSearchInputText("");
+                  }}
+                >
+                  Clear
+                </button>
+              </div>
+              <div className="col-12">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder=""
+                  aria-label="Example text with button addon"
+                  aria-describedby="button-addon1"
+                  value={searchInputText}
+                  onChange={(e) => {
+                    setSearchInputText(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+
             <table className="table table-striped table-hover">
               <thead>
                 <tr>
@@ -237,85 +280,97 @@ const CrudControlLedger: React.FC = () => {
               <tbody>
                 {/* stateのdetailsをmapし、各要素をdetailとして、以下の内容をreturn()する*/}
                 {data.details.map((detail, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>
-                        <span className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            id={`checkbox${detail.id}`} // id={/*`checkbox${detailのid}`*/}
-                            name="options"
-                            value={index} // value={/*設定したindex*/}
-                            onChange={selectCheckboxes}
-                            checked={detail.checkbox} // checked={/*detailのcheckbox*/}
-                            data-id={`${detail.id}`} // data-id={/*`${detailのid}`*/}
-                          />
-                          <label htmlFor={`checkbox${detail.id}`}></label>
-                        </span>
-                      </td>
-                      <td className="abbreviation max-width-30">{detail.id}</td>
-                      <td
-                        className="abbreviation max-width-180"
-                        onClick={popupDetail}
-                      >
-                        {detail.title}
-                      </td>
-                      <td
-                        className="abbreviation max-width-190"
-                        onClick={popupDetail}
-                      >
-                        {detail.url}
-                      </td>
-                      <td className="abbreviation max-width-80">
-                        {detail.effectivedate}
-                      </td>
-                      <td className="abbreviation max-width-30">
-                        {detail.category}
-                      </td>
-                      <td className="abbreviation max-width-30">
-                        {detail.valid}
-                      </td>
-                      <td className="abbreviation max-width-30">
-                        {detail.sortorder}
-                      </td>
-                      <td>
-                        <a
-                          href="#editRecordModal"
-                          className="edit"
-                          data-toggle="modal"
-                          id={`${detail.id}Edit`}
-                          data-id={`${detail.id}`}
-                          onClick={() => {
-                            dispatch(messageClear());
-                            dispatch(setEditModal(detail.id));
-                          }}
+                  let detailDom = <></>;
+                  if (
+                    detail.title.indexOf(searchText) !== -1 ||
+                    detail.url === searchText ||
+                    detail.effectivedate.indexOf(searchText) !== -1 ||
+                    searchText === ""
+                  ) {
+                    detailDom = (
+                      <tr key={index}>
+                        <td>
+                          <span className="custom-checkbox">
+                            <input
+                              type="checkbox"
+                              id={`checkbox${detail.id}`} // id={/*`checkbox${detailのid}`*/}
+                              name="options"
+                              value={index} // value={/*設定したindex*/}
+                              onChange={selectCheckboxes}
+                              checked={detail.checkbox} // checked={/*detailのcheckbox*/}
+                              data-id={`${detail.id}`} // data-id={/*`${detailのid}`*/}
+                            />
+                            <label htmlFor={`checkbox${detail.id}`}></label>
+                          </span>
+                        </td>
+                        <td className="abbreviation max-width-30">
+                          {detail.id}
+                        </td>
+                        <td
+                          className="abbreviation max-width-180"
+                          onClick={popupDetail}
                         >
-                          <i
-                            className="material-icons"
-                            data-toggle="tooltip"
-                            title="Edit"
-                          >
-                            &#xE254;
-                          </i>
-                        </a>
-                        <a
-                          href="#deleteRecordModal"
-                          className="delete"
-                          data-toggle="modal"
-                          data-id={`${detail.id}`}
-                          onClick={setDeleteModal}
+                          {detail.title}
+                        </td>
+                        <td
+                          className="abbreviation max-width-190"
+                          onClick={popupDetail}
                         >
-                          <i
-                            className="material-icons"
-                            data-toggle="tooltip"
-                            title="Delete"
+                          {detail.url}
+                        </td>
+                        <td className="abbreviation max-width-80">
+                          {detail.effectivedate}
+                        </td>
+                        <td className="abbreviation max-width-30">
+                          {detail.category}
+                        </td>
+                        <td className="abbreviation max-width-30">
+                          {detail.valid}
+                        </td>
+                        <td className="abbreviation max-width-30">
+                          {detail.sortorder}
+                        </td>
+                        <td>
+                          <a
+                            href="#editRecordModal"
+                            className="edit"
+                            data-toggle="modal"
+                            id={`${detail.id}Edit`}
+                            data-id={`${detail.id}`}
+                            onClick={() => {
+                              dispatch(messageClear());
+                              dispatch(setEditModal(detail.id));
+                            }}
                           >
-                            &#xE872;
-                          </i>
-                        </a>
-                      </td>
-                    </tr>
-                  );
+                            <i
+                              className="material-icons"
+                              data-toggle="tooltip"
+                              title="Edit"
+                            >
+                              &#xE254;
+                            </i>
+                          </a>
+                          <a
+                            href="#deleteRecordModal"
+                            className="delete"
+                            data-toggle="modal"
+                            data-id={`${detail.id}`}
+                            onClick={setDeleteModal}
+                          >
+                            <i
+                              className="material-icons"
+                              data-toggle="tooltip"
+                              title="Delete"
+                            >
+                              &#xE872;
+                            </i>
+                          </a>
+                        </td>
+                      </tr>
+                    );
+                  }
+
+                  return detailDom;
                 })}
               </tbody>
             </table>
@@ -528,6 +583,32 @@ const CrudControlLedger: React.FC = () => {
                               return validDom;
                             })}
                           </select>
+                        </div>
+                      );
+                    } else if (columnTitle.Field === "id") {
+                      return (
+                        <div className="form-group">
+                          <label>{columnTitle.Field}</label>
+                          <input
+                            type="text"
+                            list="datalistOptions"
+                            className="form-control"
+                            id={columnTitle.Field}
+                            name={columnTitle.Field}
+                            value={columnTitle.value}
+                            onChange={(e) =>
+                              dispatch(
+                                changeInsertModal({
+                                  value: e.target.value,
+                                  field: columnTitle.Field,
+                                })
+                              )
+                            }
+                            required
+                          />
+                          <datalist id="datalistOptions">
+                            <option value={data.allCount + 1} />
+                          </datalist>
                         </div>
                       );
                     } else {
