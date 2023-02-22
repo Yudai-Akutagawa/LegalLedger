@@ -1,5 +1,6 @@
 import React from "react";
 import { useAppDispatch } from "../../app/hooks";
+import { fetchAsyncGet } from "../legalControlLedger/legalControlLedgerSlice";
 import { selectCategory, selectDetail, selectList } from "./menuSelectSlice";
 
 const Menu: React.FC = () => {
@@ -19,7 +20,10 @@ const Menu: React.FC = () => {
                   <button
                     className="btn btn-primary "
                     type="button"
-                    onClick={() => dispatch(selectList())}
+                    onClick={() => {
+                      dispatch(selectList());
+                      dispatch(fetchAsyncGet());
+                    }}
                   >
                     法規制管理台帳
                   </button>
