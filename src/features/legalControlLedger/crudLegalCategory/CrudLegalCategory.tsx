@@ -21,7 +21,7 @@ import {
   deleteAsyncCategory,
   editAsyncCategory,
   messageClear,
-} from "../messageSlice";
+} from "../maintResult/messageSlice";
 import MaintResult from "../maintResult/MaintResult"; //MaintResultコンポーネントのインポート
 import insertJson from "../crudLegalCategory/insertCategory.json"; // データを追加する際に必要なJSONデータ定義
 import deleteJson from "../crudLegalCategory/deleteCategory.json"; // データを削除する際に必要なJSONデータ定義

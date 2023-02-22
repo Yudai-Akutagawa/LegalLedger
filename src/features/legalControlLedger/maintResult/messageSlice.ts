@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { RootState } from "../../app/store";
-import insertJson from "./crudLegalCategory/insertCategory.json";
-import deleteJson from "./crudLegalCategory/deleteCategory.json";
-import editJson from "./crudLegalCategory/editCategory.json";
-import insertControlLedgerJson from "./crudControlLedger/insertControlLedger.json";
-import deleteControlLedgerJson from "./crudControlLedger/deleteControlLedger.json";
-import editControlLedgerJson from "./crudControlLedger/editControlLedger.json";
-import responseJson from "./crudLegalCategory/response.json";
+import { RootState } from "../../../app/store";
+import insertJson from "../crudLegalCategory/insertCategory.json";
+import deleteJson from "../crudLegalCategory/deleteCategory.json";
+import editJson from "../crudLegalCategory/editCategory.json";
+import insertControlLedgerJson from "../crudControlLedger/insertControlLedger.json";
+import deleteControlLedgerJson from "../crudControlLedger/deleteControlLedger.json";
+import editControlLedgerJson from "../crudControlLedger/editControlLedger.json";
+import responseJson from "../maintResult/response.json";
 
 const apiInsertCategoryUrl = "http://localhost:3500/api/insertLegalCategory/";
 const apiDeleteCategoryUrl = "http://localhost:3500/api/deleteLegalCategory/";

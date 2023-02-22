@@ -39,20 +39,13 @@ const crudCategorySlice = createSlice({
       state.data.details.map((detail) => {
         if (action.payload === detail.id) {
           const newRecord = {
-            id: detail.id,
-            categoryname: detail.categoryname,
-            sortorder: detail.sortorder,
-            color: detail.color,
+            ...detail,
             checkbox: !detail.checkbox,
           };
           newDetails.push(newRecord);
         } else {
           const newRecord = {
-            id: detail.id,
-            categoryname: detail.categoryname,
-            sortorder: detail.sortorder,
-            color: detail.color,
-            checkbox: detail.checkbox,
+            ...detail,
           };
           newDetails.push(newRecord);
         }
@@ -65,17 +58,14 @@ const crudCategorySlice = createSlice({
      */
     setAllChecked: (state) => {
       const newDetails: typeof state.data.details = [];
-      state.data.details.map((details) => {
+      state.data.details.map((detail) => {
         const newDetail = {
-          id: details.id,
-          categoryname: details.categoryname,
-          sortorder: details.sortorder,
-          color: details.color,
+          ...detail,
           checkbox: true,
         };
         return newDetails.push(newDetail);
       });
-      state.data.details = newDetails;
+      state.data.details = [...newDetails];
     },
     /**
      * 全ての項目を未チェック状態にする
@@ -83,17 +73,14 @@ const crudCategorySlice = createSlice({
      */
     setAllUnchecked: (state) => {
       const newDetails: typeof state.data.details = [];
-      state.data.details.map((details) => {
+      state.data.details.map((detail) => {
         const newDetail = {
-          id: details.id,
-          categoryname: details.categoryname,
-          sortorder: details.sortorder,
-          color: details.color,
+          ...detail,
           checkbox: false,
         };
         return newDetails.push(newDetail);
       });
-      state.data.details = newDetails;
+      state.data.details = [...newDetails];
     },
     /**
      * 追加モーダルの中身を消去（初期化）する
@@ -105,7 +92,7 @@ const crudCategorySlice = createSlice({
         const newModal = { Field: columnTitle.Field, value: "" };
         return newModals.push(newModal);
       });
-      state.data.columnTitles = newModals;
+      state.data.columnTitles = [...newModals];
     },
     /**
      * 追加モーダルの中身が変更される度に、その値を一時的に保存する
@@ -117,18 +104,18 @@ const crudCategorySlice = createSlice({
       state,
       action: { payload: { value: string; field: string } }
     ) => {
+      const { value, field } = action.payload;
       const newModals: typeof state.data.columnTitles = [];
       state.data.columnTitles.map((columnTitle) => {
         const newModal = {
-          Field: columnTitle.Field,
-          value: columnTitle.value,
+          ...columnTitle,
         };
-        if (action.payload.field === columnTitle.Field) {
-          newModal.value = action.payload.value;
+        if (field === columnTitle.Field) {
+          newModal.value = value;
         }
         return newModals.push(newModal);
       });
-      state.data.columnTitles = newModals;
+      state.data.columnTitles = [...newModals];
     },
     /**
      * 編集モーダルの中身が変更される度に、その値を一時的に保存する
@@ -140,18 +127,18 @@ const crudCategorySlice = createSlice({
       state,
       action: { payload: { value: string; field: string } }
     ) => {
+      const { value, field } = action.payload;
       const newModals: typeof state.data.columnTitlesModal = [];
       state.data.columnTitlesModal.map((columnTitleModal) => {
         const newModal = {
-          Field: columnTitleModal.Field,
-          value: columnTitleModal.value,
+          ...columnTitleModal,
         };
-        if (action.payload.field === columnTitleModal.Field) {
-          newModal.value = action.payload.value;
+        if (field === columnTitleModal.Field) {
+          newModal.value = value;
         }
         return newModals.push(newModal);
       });
-      state.data.columnTitlesModal = newModals;
+      state.data.columnTitlesModal = [...newModals];
     },
     /**
      * 編集モーダルに編集する項目の値をセット
@@ -171,7 +158,7 @@ const crudCategorySlice = createSlice({
         return newModals;
       });
       state.data.columnTitleId = { Field: "id", value: action.payload };
-      state.data.columnTitlesModal = newModals;
+      state.data.columnTitlesModal = [...newModals];
     },
   },
   extraReducers: (builder) => {

@@ -21,7 +21,7 @@ import {
   deleteAsyncControlLedger,
   editAsyncControlLedger,
   messageClear,
-} from "../messageSlice";
+} from "../maintResult/messageSlice";
 import MaintResult from "../maintResult/MaintResult"; //MaintResultコンポーネントのインポート
 import insertJson from "../crudControlLedger/insertControlLedger.json"; // データを追加する際に必要なJSONデータ定義
 import deleteJson from "../crudControlLedger/deleteControlLedger.json"; // データを削除する際に必要なJSONデータ定義

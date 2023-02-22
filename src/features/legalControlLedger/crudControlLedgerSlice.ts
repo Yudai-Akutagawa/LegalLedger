@@ -39,26 +39,13 @@ const crudControlLedgerSlice = createSlice({
       state.data.details.map((detail) => {
         if (action.payload === detail.id) {
           const newRecord = {
-            id: detail.id,
-            title: detail.title,
-            url: detail.url,
-            effectivedate: detail.effectivedate,
-            category: detail.category,
-            valid: detail.valid,
-            sortorder: detail.sortorder,
+            ...detail,
             checkbox: !detail.checkbox,
           };
           newDetails.push(newRecord);
         } else {
           const newRecord = {
-            id: detail.id,
-            title: detail.title,
-            url: detail.url,
-            effectivedate: detail.effectivedate,
-            category: detail.category,
-            valid: detail.valid,
-            sortorder: detail.sortorder,
-            checkbox: detail.checkbox,
+            ...detail,
           };
           newDetails.push(newRecord);
         }
@@ -73,18 +60,12 @@ const crudControlLedgerSlice = createSlice({
       const newDetails: typeof state.data.details = [];
       state.data.details.map((detail) => {
         const newDetail = {
-          id: detail.id,
-          title: detail.title,
-          url: detail.url,
-          effectivedate: detail.effectivedate,
-          category: detail.category,
-          valid: detail.valid,
-          sortorder: detail.sortorder,
+          ...detail,
           checkbox: true,
         };
         return newDetails.push(newDetail);
       });
-      state.data.details = newDetails;
+      state.data.details = [...newDetails];
     },
     /**
      * 全ての項目を未チェック状態にする
@@ -94,18 +75,12 @@ const crudControlLedgerSlice = createSlice({
       const newDetails: typeof state.data.details = [];
       state.data.details.map((detail) => {
         const newDetail = {
-          id: detail.id,
-          title: detail.title,
-          url: detail.url,
-          effectivedate: detail.effectivedate,
-          category: detail.category,
-          valid: detail.valid,
-          sortorder: detail.sortorder,
+          ...detail,
           checkbox: false,
         };
         return newDetails.push(newDetail);
       });
-      state.data.details = newDetails;
+      state.data.details = [...newDetails];
     },
     /**
      * 追加モーダルの中身を消去（初期化）する
@@ -115,18 +90,15 @@ const crudControlLedgerSlice = createSlice({
       const newModals: typeof state.data.columnTitles = [];
       state.data.columnTitles.map((columnTitle) => {
         const newModal = {
-          date: columnTitle.date,
-          category: columnTitle.category,
-          valid: columnTitle.valid,
-          Field: columnTitle.Field,
+          ...columnTitle,
           value: "",
         };
         return newModals.push(newModal);
       });
       // セレクトボックスが未選択（初期状態）のまま追加を実行した際に、エラーが起きないように予め初期値を代入
-      newModals[4].value = "1";
-      newModals[5].value = "1";
-      state.data.columnTitles = newModals;
+      newModals[4].value = "1"; // categoryの初期値
+      newModals[5].value = "1"; // vaildの初期値
+      state.data.columnTitles = [...newModals];
     },
     /**
      * 追加モーダルの中身が変更される度に、その値を一時的に保存する
@@ -138,21 +110,18 @@ const crudControlLedgerSlice = createSlice({
       state,
       action: { payload: { value: string; field: string } }
     ) => {
+      const { value, field } = action.payload;
       const newModals: typeof state.data.columnTitles = [];
       state.data.columnTitles.map((columnTitle) => {
         const newModal = {
-          date: columnTitle.date,
-          category: columnTitle.category,
-          valid: columnTitle.valid,
-          Field: columnTitle.Field,
-          value: columnTitle.value,
+          ...columnTitle,
         };
-        if (action.payload.field === columnTitle.Field) {
-          newModal.value = action.payload.value;
+        if (field === columnTitle.Field) {
+          newModal.value = value;
         }
         return newModals.push(newModal);
       });
-      state.data.columnTitles = newModals;
+      state.data.columnTitles = [...newModals];
     },
     /**
      * 編集モーダルの中身が変更される度に、その値を一時的に保存する
@@ -164,21 +133,18 @@ const crudControlLedgerSlice = createSlice({
       state,
       action: { payload: { value: string; field: string } }
     ) => {
+      const { value, field } = action.payload;
       const newModals: typeof state.data.columnTitlesModal = [];
       state.data.columnTitlesModal.map((columnTitle) => {
         const newModal = {
-          date: columnTitle.date,
-          category: columnTitle.category,
-          valid: columnTitle.valid,
-          Field: columnTitle.Field,
-          value: columnTitle.value,
+          ...columnTitle,
         };
-        if (action.payload.field === columnTitle.Field) {
-          newModal.value = action.payload.value;
+        if (field === columnTitle.Field) {
+          newModal.value = value;
         }
         return newModals.push(newModal);
       });
-      state.data.columnTitlesModal = newModals;
+      state.data.columnTitlesModal = [...newModals];
     },
     /**
      * 編集モーダルに編集する項目の値をセット
@@ -186,58 +152,31 @@ const crudControlLedgerSlice = createSlice({
      * @param {number} action.payload - 編集する項目のid
      */
     setEditModal: (state, action) => {
-      let newModals: typeof state.data.columnTitlesModal = [];
+      let values: string[] = [];
+      const newModals: typeof state.data.columnTitlesModal = [];
       state.data.details.map((detail) => {
         if (action.payload === detail.id) {
-          newModals = [
-            {
-              date: false,
-              category: false,
-              valid: false,
-              Field: "title",
-              value: detail.title,
-            },
-            {
-              date: false,
-              category: false,
-              valid: false,
-              Field: "url",
-              value: detail.url,
-            },
-            {
-              date: true,
-              category: false,
-              valid: false,
-              Field: "effectivedate",
-              value: detail.effectivedate,
-            },
-            {
-              date: false,
-              category: true,
-              valid: false,
-              Field: "category",
-              value: String(detail.category),
-            },
-            {
-              date: false,
-              category: false,
-              valid: true,
-              Field: "valid",
-              value: String(detail.valid),
-            },
-            {
-              date: false,
-              category: false,
-              valid: false,
-              Field: "sortorder",
-              value: String(detail.sortorder),
-            },
+          values = [
+            detail.title,
+            detail.url,
+            detail.effectivedate,
+            String(detail.category),
+            String(detail.valid),
+            String(detail.sortorder),
           ];
+          state.data.columnTitles.map((columnTitle, i) => {
+            // i=0（id以外）を代入
+            if (i) {
+              newModals.push({
+                ...columnTitle,
+                value: values[i - 1],
+              });
+            }
+          });
         }
-        return newModals;
       });
       state.data.columnTitleId = { Field: "id", value: action.payload };
-      state.data.columnTitlesModal = newModals;
+      state.data.columnTitlesModal = [...newModals];
     },
   },
   extraReducers: (builder) => {
