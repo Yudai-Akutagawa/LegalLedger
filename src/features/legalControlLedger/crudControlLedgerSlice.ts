@@ -3,7 +3,7 @@ import axios from "axios";
 import { RootState } from "../../app/store";
 import dataJson from "./crudControlLedger.json";
 
-const apiUrl = "http://localhost:3500/api/crudLegalControlLedger";
+const apiUrl = "https://lcl.akutagawa.blog/lcl/crudLegalControlLedger";
 
 type APIDATA = typeof dataJson;
 

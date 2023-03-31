@@ -1,6 +1,7 @@
 {
   "name": "react_crud_multi_no_dom",
   "version": "0.1.0",
+  "homepage": "./",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.2",

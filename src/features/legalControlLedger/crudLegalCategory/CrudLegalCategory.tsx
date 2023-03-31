@@ -21,7 +21,7 @@ import {
   deleteAsyncCategory,
   editAsyncCategory,
   messageClear,
-} from "../maintResult/messageSlice";
+} from "../messageSlice";
 import MaintResult from "../maintResult/MaintResult"; //MaintResultコンポーネントのインポート
 import insertJson from "../crudLegalCategory/insertCategory.json"; // データを追加する際に必要なJSONデータ定義
 import deleteJson from "../crudLegalCategory/deleteCategory.json"; // データを削除する際に必要なJSONデータ定義
@@ -33,6 +33,8 @@ const CrudLegalCategory: React.FC = () => {
   const [allCheckCheckbox, setAllCheckCheckbox] = useState(false); // 全選択チェックボックスの選択/未選択のための状態を管理する
   const [deleteIds, setDeleteIds] = useState("なし"); //削除するIDを格納する状態を管理する
   const [multiple, setMultiple] = useState("single"); // 複数選択を管理する状態を管理する
+  const [searchText, setSearchText] = useState("");
+  const [searchInputText, setSearchInputText] = useState("");
 
   /* チェックボックス処理用関数 */
   // 全選択チェックボックスクリック時の処理
@@ -201,6 +203,47 @@ const CrudLegalCategory: React.FC = () => {
               </div>
             </div>
 
+            <div className="row">
+              <div className="col-1">
+                <button
+                  className="btn btn-primary"
+                  type="button"
+                  id="button-addon1"
+                  onClick={(e) => {
+                    setSearchText(searchInputText);
+                  }}
+                >
+                  Search
+                </button>
+              </div>
+              <div className="col-1">
+                <button
+                  className="btn btn-primary"
+                  type="button"
+                  id="button-addon1"
+                  onClick={() => {
+                    setSearchText("");
+                    setSearchInputText("");
+                  }}
+                >
+                  Clear
+                </button>
+              </div>
+              <div className="col-12">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder=""
+                  aria-label="Example text with button addon"
+                  aria-describedby="button-addon1"
+                  value={searchInputText}
+                  onChange={(e) => {
+                    setSearchInputText(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+
             <table className="table table-striped table-hover">
               <thead>
                 <tr>
@@ -224,86 +267,94 @@ const CrudLegalCategory: React.FC = () => {
               <tbody>
                 {/* stateのdetailsをmapし、各要素をdetailとして、以下の内容をreturn()する*/}
                 {data.details.map((detail, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>
-                        <span className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            id={`checkbox${detail.id}`} // id={/*`checkbox${detailのid}`*/}
-                            name="options"
-                            value={index} // value={/*設定したindex*/}
-                            onChange={selectCheckboxes}
-                            checked={detail.checkbox} // checked={/*detailのcheckbox*/}
-                            data-id={`${detail.id}`} // data-id={/*`${detailのid}`*/}
-                          />
-                          <label htmlFor={`checkbox${detail.id}`}></label>
-                        </span>
-                      </td>
-                      <td>{detail.id}</td>
-                      <td>{detail.categoryname}</td>
-                      <td>{detail.sortorder}</td>
-                      <td>
-                        <svg
-                          className="bd-placeholder-img mr-1 rounded"
-                          width="16"
-                          height="16"
-                          xmlns="http://www.w3.org/2000/svg"
-                          preserveAspectRatio="xMidYMid slice"
-                          focusable="false"
-                          role="img"
-                          aria-label="Placeholder: 32x32"
-                        >
-                          <title>Placeholder</title>
-                          <rect
-                            width="100%"
-                            height="100%"
-                            fill={detail.color}
-                          />
-                          <text x="50%" y="50%" fill={detail.color} dy=".3em">
-                            32x32
-                          </text>
-                        </svg>
-                        {detail.color}
-                      </td>
-                      <td>
-                        <a
-                          href="#editRecordModal"
-                          className="edit"
-                          data-toggle="modal"
-                          id={`${detail.id}Edit`}
-                          data-id={`${detail.id}`}
-                          onClick={() => {
-                            dispatch(messageClear());
-                            dispatch(setEditModal(detail.id));
-                          }}
-                        >
-                          <i
-                            className="material-icons"
-                            data-toggle="tooltip"
-                            title="Edit"
+                  let detailDom = <></>;
+                  if (
+                    detail.categoryname.indexOf(searchText) !== -1 ||
+                    detail.color === searchText ||
+                    searchText === ""
+                  ) {
+                    detailDom = (
+                      <tr key={index}>
+                        <td>
+                          <span className="custom-checkbox">
+                            <input
+                              type="checkbox"
+                              id={`checkbox${detail.id}`} // id={/*`checkbox${detailのid}`*/}
+                              name="options"
+                              value={index} // value={/*設定したindex*/}
+                              onChange={selectCheckboxes}
+                              checked={detail.checkbox} // checked={/*detailのcheckbox*/}
+                              data-id={`${detail.id}`} // data-id={/*`${detailのid}`*/}
+                            />
+                            <label htmlFor={`checkbox${detail.id}`}></label>
+                          </span>
+                        </td>
+                        <td>{detail.id}</td>
+                        <td>{detail.categoryname}</td>
+                        <td>{detail.sortorder}</td>
+                        <td>
+                          <svg
+                            className="bd-placeholder-img mr-1 rounded"
+                            width="16"
+                            height="16"
+                            xmlns="http://www.w3.org/2000/svg"
+                            preserveAspectRatio="xMidYMid slice"
+                            focusable="false"
+                            role="img"
+                            aria-label="Placeholder: 32x32"
                           >
-                            &#xE254;
-                          </i>
-                        </a>
-                        <a
-                          href="#deleteRecordModal"
-                          className="delete"
-                          data-toggle="modal"
-                          data-id={`${detail.id}`}
-                          onClick={setDeleteModal}
-                        >
-                          <i
-                            className="material-icons"
-                            data-toggle="tooltip"
-                            title="Delete"
+                            <title>Placeholder</title>
+                            <rect
+                              width="100%"
+                              height="100%"
+                              fill={detail.color}
+                            />
+                            <text x="50%" y="50%" fill={detail.color} dy=".3em">
+                              32x32
+                            </text>
+                          </svg>
+                          {detail.color}
+                        </td>
+                        <td>
+                          <a
+                            href="#editRecordModal"
+                            className="edit"
+                            data-toggle="modal"
+                            id={`${detail.id}Edit`}
+                            data-id={`${detail.id}`}
+                            onClick={() => {
+                              dispatch(messageClear());
+                              dispatch(setEditModal(detail.id));
+                            }}
                           >
-                            &#xE872;
-                          </i>
-                        </a>
-                      </td>
-                    </tr>
-                  );
+                            <i
+                              className="material-icons"
+                              data-toggle="tooltip"
+                              title="Edit"
+                            >
+                              &#xE254;
+                            </i>
+                          </a>
+                          <a
+                            href="#deleteRecordModal"
+                            className="delete"
+                            data-toggle="modal"
+                            data-id={`${detail.id}`}
+                            onClick={setDeleteModal}
+                          >
+                            <i
+                              className="material-icons"
+                              data-toggle="tooltip"
+                              title="Delete"
+                            >
+                              &#xE872;
+                            </i>
+                          </a>
+                        </td>
+                      </tr>
+                    );
+                  }
+                  return detailDom;
                 })}
               </tbody>
             </table>

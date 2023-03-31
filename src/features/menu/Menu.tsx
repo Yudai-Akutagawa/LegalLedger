@@ -1,5 +1,7 @@
 import React from "react";
 import { useAppDispatch } from "../../app/hooks";
+import { fetchAsyncGetCategory } from "../legalControlLedger/crudCategorySlice";
+import { fetchAsyncGetControlLedger } from "../legalControlLedger/crudControlLedgerSlice";
 import { fetchAsyncGet } from "../legalControlLedger/legalControlLedgerSlice";
 import { selectCategory, selectDetail, selectList } from "./menuSelectSlice";
 
@@ -30,14 +32,20 @@ const Menu: React.FC = () => {
                   <button
                     className="btn btn-info "
                     type="button"
-                    onClick={() => dispatch(selectCategory())}
+                    onClick={() => {
+                      dispatch(selectCategory());
+                      dispatch(fetchAsyncGetCategory(1));
+                    }}
                   >
                     カテゴリーテーブル・メンテ
                   </button>
                   <button
                     className="btn btn-success "
                     type="button"
-                    onClick={() => dispatch(selectDetail())}
+                    onClick={() => {
+                      dispatch(selectDetail());
+                      dispatch(fetchAsyncGetControlLedger(1));
+                    }}
                   >
                     明細テーブル・メンテ
                   </button>

@@ -1,24 +1,26 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { RootState } from "../../../app/store";
-import insertJson from "../crudLegalCategory/insertCategory.json";
-import deleteJson from "../crudLegalCategory/deleteCategory.json";
-import editJson from "../crudLegalCategory/editCategory.json";
-import insertControlLedgerJson from "../crudControlLedger/insertControlLedger.json";
-import deleteControlLedgerJson from "../crudControlLedger/deleteControlLedger.json";
-import editControlLedgerJson from "../crudControlLedger/editControlLedger.json";
-import responseJson from "../maintResult/response.json";
+import { RootState } from "../../app/store";
+import insertJson from "./crudLegalCategory/insertCategory.json";
+import deleteJson from "./crudLegalCategory/deleteCategory.json";
+import editJson from "./crudLegalCategory/editCategory.json";
+import insertControlLedgerJson from "./crudControlLedger/insertControlLedger.json";
+import deleteControlLedgerJson from "./crudControlLedger/deleteControlLedger.json";
+import editControlLedgerJson from "./crudControlLedger/editControlLedger.json";
+import responseJson from "./maintResult/response.json";
 
-const apiInsertCategoryUrl = "http://localhost:3500/api/insertLegalCategory/";
-const apiDeleteCategoryUrl = "http://localhost:3500/api/deleteLegalCategory/";
-const apiEditCategoryUrl = "http://localhost:3500/api/editLegalCategory/";
+const apiInsertCategoryUrl =
+  "https://lcl.akutagawa.blog/lcl/insertLegalCategory/";
+const apiDeleteCategoryUrl =
+  "https://lcl.akutagawa.blog/lcl/deleteLegalCategory/";
+const apiEditCategoryUrl = "https://lcl.akutagawa.blog/lcl/editLegalCategory/";
 
 const apiInsertControlLedgerUrl =
-  "http://localhost:3500/api/insertLegalControlLedger/";
+  "https://lcl.akutagawa.blog/lcl/insertLegalControlLedger/";
 const apiDeleteControlLedgerUrl =
-  "http://localhost:3500/api/deleteLegalControlLedger/";
+  "https://lcl.akutagawa.blog/lcl/deleteLegalControlLedger/";
 const apiEditControlLedgerUrl =
-  "http://localhost:3500/api/editLegalControlLedger/";
+  "https://lcl.akutagawa.blog/lcl/editLegalControlLedger/";
 
 type INSERTDATACATEGORY = typeof insertJson;
 type DELETEDATACATEGORY = typeof deleteJson;

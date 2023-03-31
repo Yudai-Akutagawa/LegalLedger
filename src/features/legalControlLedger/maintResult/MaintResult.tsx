@@ -1,6 +1,6 @@
 import React from "react";
 import { useAppSelector } from "../../../app/hooks";
-import { messageData } from "./messageSlice";
+import { messageData } from "../messageSlice";
 
 const MaintResult: React.FC = () => {
   const message = useAppSelector(messageData);

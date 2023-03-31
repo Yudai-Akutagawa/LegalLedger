@@ -3,7 +3,7 @@ import axios from "axios";
 import { RootState } from "../../app/store";
 import dataJson from "./legalcontrolledger.json";
 
-const apiUrl = "http://localhost:3500/api/list";
+const apiUrl = "https://lcl.akutagawa.blog/lcl/list";
 
 type APIDATA = typeof dataJson;
 
